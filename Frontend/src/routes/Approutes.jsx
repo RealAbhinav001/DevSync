@@ -11,7 +11,7 @@ import OrganizationInvites from "../pages/OrganizationInvites/Organization"
 import Team from "../pages/Team/Team"
 import TeamDetail from "../pages/TeamDetails/TeamDetail"
 import Project from "../pages/Project/Project"
-
+import Task from "../pages/Task/task"
 
 const AppRoutes = ()=>{
     return(
@@ -62,6 +62,11 @@ const AppRoutes = ()=>{
             <Route path="/organization/:id/teams/:teamId/projects" element={
                 <ProtectedRoute>
                     <Project/>
+                </ProtectedRoute>
+            }/>
+            <Route path="/organization/:id/teams/:teamId/projects/:projectId" element={
+                <ProtectedRoute>
+                    <Task/>
                 </ProtectedRoute>
             }/>
         </Routes>
