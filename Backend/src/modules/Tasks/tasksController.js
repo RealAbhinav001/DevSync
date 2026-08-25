@@ -83,7 +83,7 @@ const getController = async (req,res)=>{
             })
         }
 
-        const project = await projectModel.findById(projectId).populate("tasks")
+        const project = await projectModel.findById(projectId).populate({ path: "tasks", populate: { path: "assignee" } })
         if(!project){
             return res.status(404).json({
                 message:"Project is not found"
@@ -195,6 +195,7 @@ const assignController = async (req,res)=>{
 
         task.assignee = user._id
         await task.save()
+        await task.populate("assignee")
 
         await notification({
             receiver:user._id,
