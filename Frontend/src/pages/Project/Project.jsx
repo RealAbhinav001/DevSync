@@ -180,15 +180,19 @@ const Project = () => {
           <div className="prx-list">
             {projects.map((project, i) => (
               <div className="prx-row" key={project._id}>
-                <Link to={`/organization/${params.id}/teams/${params.teamId}/projects/${project._id}`}>
-                  <span className="prx-idx">
+                <span className="prx-idx">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <span className="prx-badge">
                   {project.title.slice(0, 2).toUpperCase()}
                 </span>
                 <span className="prx-body">
-                  <span className="prx-name">{project.title}</span>
+                  <Link
+                    to={`/organization/${params.id}/teams/${params.teamId}/projects/${project._id}`}
+                    className="prx-name"
+                  >
+                    {project.title}
+                  </Link>
                   <span className="prx-desc">{project.description}</span>
                 </span>
                 <span className="prx-metas">
@@ -221,9 +225,12 @@ const Project = () => {
                     <Trash2 size={15} />
                   </button>
                 </span>
-                <span className="prx-go" aria-hidden="true">
+                <Link
+                  to={`/organization/${params.id}/teams/${params.teamId}/projects/${project._id}`}
+                  className="prx-go"
+                  aria-label="Open tasks"
+                >
                   <ArrowUpRight size={18} />
-                </span>
                 </Link>
               </div>
             ))}

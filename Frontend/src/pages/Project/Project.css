@@ -218,6 +218,9 @@
   gap: 0.2rem;
 }
 .prx-name {
+  display: block;
+  max-width: 100%;
+  width: fit-content;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: clamp(1.1rem, 2.8vw, 1.55rem);
@@ -226,8 +229,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
   transition: color 0.3s;
 }
+.prx-name:hover { color: #ff4b1e; }
 .prx-row:hover .prx-name { color: #ff4b1e; }
 .prx-desc {
   font-family: var(--font-body);
