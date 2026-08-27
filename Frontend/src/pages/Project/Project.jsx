@@ -180,7 +180,8 @@ const Project = () => {
           <div className="prx-list">
             {projects.map((project, i) => (
               <div className="prx-row" key={project._id}>
-                <span className="prx-idx">
+                <Link to={`/organization/${params.id}/teams/${params.teamId}/projects/${project._id}`}>
+                  <span className="prx-idx">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <span className="prx-badge">
@@ -223,6 +224,7 @@ const Project = () => {
                 <span className="prx-go" aria-hidden="true">
                   <ArrowUpRight size={18} />
                 </span>
+                </Link>
               </div>
             ))}
           </div>
