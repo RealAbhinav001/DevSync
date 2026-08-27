@@ -7,6 +7,7 @@ const Task = ()=>{
     const [error,setError] = useState("")
     const [loading,setLoading] = useState(false)
     const [taskForm,setTaskForm] = useState(false)
+    const [assignInputs,setAssignInputs] = useState({})
     const [taskData,setTaskData] = useState({
         title:"",
         description: "",
@@ -81,6 +82,7 @@ const Task = ()=>{
             const data = await assignUser(taskId,email)
 
             setTasks(prev => prev.map(t => t._id === taskId? data.task:t))
+            setAssignInputs(prev =>({...prev,[taskId]:""}))
             
         }
         catch(error){
@@ -132,6 +134,10 @@ const Task = ()=>{
                         <p>{task.deadline}</p>
                         <p>{task.assignee.name}</p>
                         <p>{task.assignee.email}</p>
+                        <div className="reassign-State">
+                            <input type="email" placeholder="Assignee's Email" onChange={e => setAssignInputs(prev => ({...prev,[task._id]:e.target.value}))} value={assignInputs[task._id] || ""}/>
+                            <button onClick={()=>{handleAssign(task._id,assignInputs[task._id])}}>Assign</button>
+                        </div>
                     </div>
                 ))}
             </div>}
