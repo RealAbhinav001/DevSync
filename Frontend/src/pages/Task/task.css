@@ -1,0 +1,502 @@
+/* ══════════════════════════════════════════════════════════
+   TASK BOARD — "INK & SIGNAL" (paper editorial)
+   ══════════════════════════════════════════════════════════ */
+
+.tkx-page {
+  min-height: 100vh;
+  background: var(--paper);
+  background-image:
+    radial-gradient(ellipse 70% 45% at 50% -8%, rgba(255, 75, 30, 0.05), transparent 60%),
+    linear-gradient(var(--paper), var(--paper));
+  color: var(--char);
+  display: flex;
+}
+
+.tkx-frame {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: clamp(1.4rem, 3vw, 2.4rem) 0 3rem;
+}
+
+/* ── mini rail ── */
+.tkx-minirail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--char-dim);
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid rgba(20, 20, 18, 0.14);
+}
+.tkx-minirail sup { color: #ff4b1e; }
+
+/* ── hero ── */
+.tkx-hero {
+  padding: clamp(1.8rem, 5vw, 3.2rem) 0 clamp(1.4rem, 3vw, 2.2rem);
+}
+.tkx-kicker {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1rem, 2.4vw, 1.35rem);
+  color: var(--char-dim);
+  margin-bottom: 0.5rem;
+}
+.tkx-title {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-start;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(3rem, 11vw, 7.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--char);
+}
+.tkx-star {
+  width: clamp(1.2rem, 3vw, 2rem);
+  color: #ff4b1e;
+  margin-left: 0.4rem;
+  animation: beam-rotate 7s linear infinite;
+}
+
+.tkx-heroline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.6rem;
+  padding-top: 1.3rem;
+  border-top: 1px solid rgba(20, 20, 18, 0.14);
+}
+.tkx-count {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--char-dim);
+}
+
+/* new task button — ink → orange flood */
+.tkx-new {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.3rem;
+  border: 1px solid rgba(20, 20, 18, 0.28);
+  border-radius: 99px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--char);
+  background: transparent;
+  transition: color 0.35s, border-color 0.35s;
+}
+.tkx-new::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #ff4b1e;
+  transform: translateY(101%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: -1;
+}
+.tkx-new:hover { color: #fff; border-color: #ff4b1e; }
+.tkx-new:hover::before { transform: translateY(0); }
+.tkx-new svg { position: relative; z-index: 1; }
+
+/* ── state blocks ── */
+.tkx-state {
+  padding: clamp(2.4rem, 8vw, 5rem) 0;
+  text-align: center;
+}
+.tkx-state-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #ff4b1e;
+  margin-bottom: 1rem;
+}
+.tkx-state h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 5vw, 2.8rem);
+  letter-spacing: -0.02em;
+  color: var(--char);
+}
+.tkx-state p { margin-top: 0.7rem; color: var(--char-dim); font-size: 0.95rem; }
+
+.tkx-track {
+  width: min(340px, 70%);
+  height: 2px;
+  margin: 1.6rem auto 0;
+  background: rgba(20, 20, 18, 0.14);
+  overflow: hidden;
+}
+.tkx-track span {
+  display: block;
+  width: 40%;
+  height: 100%;
+  background: #ff4b1e;
+  animation: tkx-slide 1.2s ease-in-out infinite;
+}
+@keyframes tkx-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(340%); }
+}
+
+/* ── task cards grid ── */
+.tkx-list {
+  margin-top: 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+.tkx-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.2rem 1.2rem 1rem 1.5rem;
+  border: 1px solid rgba(20, 20, 18, 0.14);
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.4);
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+.tkx-card:hover {
+  border-color: rgba(20, 20, 18, 0.28);
+  box-shadow: 0 18px 40px -24px rgba(20, 20, 18, 0.4);
+  transform: translateY(-2px);
+}
+
+/* status rail (left edge) */
+.tkx-rail {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: rgba(20, 20, 18, 0.2);
+}
+.tkx-rail.is-to-do { background: rgba(20, 20, 18, 0.25); }
+.tkx-rail.is-in-progress { background: #ff4b1e; }
+.tkx-rail.is-review { background: #ffb347; }
+.tkx-rail.is-done { background: #6aa84f; }
+
+.tkx-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+.tkx-card-body { flex: 1; min-width: 0; }
+.tkx-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  color: var(--char);
+  line-height: 1.2;
+}
+.tkx-desc {
+  margin-top: 0.25rem;
+  font-size: 0.86rem;
+  color: var(--char-dim);
+  line-height: 1.4;
+}
+
+.tkx-del {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-sm);
+  border: 1px solid rgba(20, 20, 18, 0.16);
+  color: var(--char-dim);
+  background: transparent;
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
+}
+.tkx-del:hover { color: #fff; border-color: #ff4b1e; background: #ff4b1e; }
+
+/* meta row */
+.tkx-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.tkx-status {
+  padding: 0.3rem 0.55rem;
+  border-radius: 99px;
+  border: 1px solid rgba(20, 20, 18, 0.2);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--char-dim);
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.25s, color 0.25s, background 0.25s;
+}
+.tkx-status option { background: var(--paper); color: var(--char); letter-spacing: normal; }
+.tkx-status.is-in-progress { color: #ff4b1e; border-color: rgba(255,75,30,0.4); background: rgba(255,75,30,0.08); }
+.tkx-status.is-review { color: #9a6a12; border-color: rgba(255,179,71,0.5); background: rgba(255,179,71,0.16); }
+.tkx-status.is-done { color: #4a7c1e; border-color: rgba(120,170,40,0.5); background: rgba(150,190,40,0.14); }
+
+.tkx-prio {
+  padding: 0.28rem 0.6rem;
+  border-radius: 99px;
+  border: 1px solid rgba(20, 20, 18, 0.2);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--char-dim);
+}
+.tkx-prio.is-urgent { color: #c0392b; border-color: rgba(200,60,40,0.45); background: rgba(200,60,40,0.1); }
+.tkx-prio.is-high { color: #ff4b1e; border-color: rgba(255,75,30,0.4); background: rgba(255,75,30,0.08); }
+.tkx-prio.is-medium { color: #9a6a12; border-color: rgba(255,179,71,0.5); background: rgba(255,179,71,0.14); }
+.tkx-prio.is-low { color: var(--char-dim); }
+
+.tkx-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: rgba(20, 20, 18, 0.5);
+  margin-left: auto;
+}
+.tkx-date svg { color: rgba(20, 20, 18, 0.42); }
+
+/* assignee */
+.tkx-assignee {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(20, 20, 18, 0.1);
+}
+.tkx-avatar {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--char);
+  color: #ff4b1e;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.78rem;
+}
+.tkx-who { display: flex; flex-direction: column; min-width: 0; }
+.tkx-who b {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--char);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tkx-who small {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--char-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* reassign (click-to-reveal via <details>) */
+.tkx-reassign { border-top: 1px solid rgba(20, 20, 18, 0.1); padding-top: 0.6rem; }
+.tkx-reassign summary {
+  list-style: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--char-dim);
+  transition: color 0.25s;
+}
+.tkx-reassign summary::-webkit-details-marker { display: none; }
+.tkx-reassign summary:hover { color: #ff4b1e; }
+.tkx-reassign[open] summary { color: #ff4b1e; margin-bottom: 0.6rem; }
+.tkx-reassign-row { display: flex; gap: 0.5rem; }
+.tkx-reassign-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid rgba(20, 20, 18, 0.22);
+  border-radius: var(--r-sm);
+  background: var(--paper);
+  color: var(--char);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  outline: none;
+  transition: border-color 0.25s;
+}
+.tkx-reassign-row input:focus { border-color: #ff4b1e; }
+.tkx-reassign-row button {
+  flex-shrink: 0;
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--r-sm);
+  border: none;
+  background: var(--char);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+.tkx-reassign-row button:hover { background: #ff4b1e; color: #fff; }
+
+/* ── create modal ── */
+.tkx-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(8, 8, 6, 0.55);
+  backdrop-filter: blur(6px);
+}
+.tkx-modal-card {
+  width: min(520px, 100%);
+  max-height: 92vh;
+  overflow-y: auto;
+  border: 1px solid rgba(20, 20, 18, 0.16);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+  box-shadow: 0 40px 90px -24px rgba(0, 0, 0, 0.5);
+}
+.tkx-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.4rem;
+  border-bottom: 1px solid rgba(20, 20, 18, 0.14);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.2em;
+  color: var(--char-dim);
+  position: sticky;
+  top: 0;
+  background: var(--paper);
+}
+.tkx-modal-x {
+  display: grid;
+  place-items: center;
+  color: rgba(20, 20, 18, 0.5);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.25s, transform 0.25s;
+}
+.tkx-modal-x:hover { color: #ff4b1e; transform: rotate(90deg); }
+
+.tkx-form { padding: 1.5rem 1.4rem; }
+.tkx-field { display: block; margin-bottom: 1.2rem; }
+.tkx-field span {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: rgba(20, 20, 18, 0.5);
+  margin-bottom: 0.5rem;
+}
+.tkx-field input {
+  width: 100%;
+  padding: 0.55rem 0.1rem;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(20, 20, 18, 0.28);
+  color: var(--char);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+  outline: none;
+  transition: border-color 0.3s;
+}
+.tkx-field input::placeholder { color: rgba(20, 20, 18, 0.35); }
+.tkx-field input:focus { border-color: #ff4b1e; }
+
+.tkx-field-row { display: flex; gap: 1.2rem; }
+.tkx-field-row .tkx-field { flex: 1; }
+
+.tkx-select {
+  width: 100%;
+  padding: 0.6rem 0.5rem;
+  border-radius: var(--r-sm);
+  border: 1px solid rgba(20, 20, 18, 0.28);
+  background: transparent;
+  color: var(--char);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+.tkx-select:focus { border-color: #ff4b1e; }
+.tkx-select option { background: var(--paper); color: var(--char); }
+
+.tkx-submit {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  margin-top: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.95rem 1rem;
+  border-radius: 99px;
+  border: none;
+  background: var(--char);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.35s;
+}
+.tkx-submit::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #ff4b1e;
+  transform: translateY(101%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 0;
+}
+.tkx-submit:hover { color: #fff; }
+.tkx-submit:hover::before { transform: translateY(0); }
+.tkx-submit > * { position: relative; z-index: 1; }
+
+@media (max-width: 520px) {
+  .tkx-field-row { flex-direction: column; gap: 0; }
+}
