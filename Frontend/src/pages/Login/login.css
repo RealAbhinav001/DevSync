@@ -315,6 +315,78 @@
   transform: none;
 }
 
+/* ── Google authentication ── */
+
+.lgx-google {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+
+  width: 100%;
+  padding: 20px 28px;
+
+  border: 2px solid var(--char);
+  border-radius: 0;
+
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+
+  color: var(--char);
+  background: transparent;
+
+  cursor: pointer;
+  isolation: isolate;
+
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.lgx-google::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  background: var(--char);
+
+  transform: translateY(101%);
+
+  transition:
+    transform 0.45s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.lgx-google:hover {
+  color: var(--paper);
+  border-color: var(--char);
+  transform: translateY(-3px);
+}
+
+.lgx-google:hover::before {
+  transform: translateY(0);
+}
+
+.lgx-google:active {
+  transform: translateY(-1px);
+}
+
+.lgx-google:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.lgx-google:disabled::before {
+  transform: translateY(101%);
+}
+
 .lgx-swap {
   font-family: var(--font-mono);
   font-size: 0.7rem;

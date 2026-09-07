@@ -12,6 +12,7 @@ import Team from "../pages/Team/Team"
 import TeamDetail from "../pages/TeamDetails/TeamDetail"
 import Project from "../pages/Project/Project"
 import Task from "../pages/Task/task"
+import VerifyEmail from "../pages/VerifyEmail/verifyEmail";
 
 const AppRoutes = ()=>{
     return(
@@ -19,6 +20,7 @@ const AppRoutes = ()=>{
             <Route path="/" element = {<Landing/>}/>
             <Route path="/register" element={<Register/>}/>
             <Route path="/login" element={<Login/>}/>
+            <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/organization" element={
                 <ProtectedRoute>
                     <Organization/>

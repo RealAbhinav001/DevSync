@@ -1,11 +1,19 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import { BrowserRouter } from "react-router-dom";
-import { AuthProvider } from "./context/authProvider.jsx";
-import App from './App.jsx'
+import "aws-amplify/auth/enable-oauth-listener";
 
-createRoot(document.getElementById('root')).render(
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import { Amplify } from "aws-amplify";
+
+import "./index.css";
+import { AuthProvider } from "./context/authProvider.jsx";
+import App from "./App.jsx";
+
+import amplifyConfig from "./amplifyConfig";
+
+Amplify.configure(amplifyConfig);
+
+createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
@@ -13,4 +21,4 @@ createRoot(document.getElementById('root')).render(
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>
-)
+);
