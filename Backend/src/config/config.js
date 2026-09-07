@@ -1,11 +1,13 @@
-const dotenv = require('dotenv');
+const dotenv = require("dotenv");
 
 dotenv.config();
 
 const config = {
-    PORT:process.env.PORT,
+    PORT: process.env.PORT,
     MONGO_URI: process.env.MONGO_URI,
-    SECRET_KEY: process.env.SECRET_KEY
-}
+    COGNITO_REGION: process.env.COGNITO_REGION,
+    COGNITO_USER_POOL_ID: process.env.COGNITO_USER_POOL_ID,
+    COGNITO_CLIENT_ID: process.env.COGNITO_CLIENT_ID
+};
 
-module.exports=config;
+module.exports = config;

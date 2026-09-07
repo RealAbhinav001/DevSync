@@ -1,6 +1,5 @@
 const { CognitoJwtVerifier } = require("aws-jwt-verify");
 const config = require("../../config/config.js");
-const userModel = require("./authModels.js");
 
 const verifier = CognitoJwtVerifier.create({
     userPoolId: config.COGNITO_USER_POOL_ID,
@@ -8,7 +7,7 @@ const verifier = CognitoJwtVerifier.create({
     clientId: config.COGNITO_CLIENT_ID,
 });
 
-const authMiddleWare = async (req, res, next) => {
+const cognitoMiddleware = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
 
@@ -32,31 +31,10 @@ const authMiddleWare = async (req, res, next) => {
             });
         }
 
-        // Verify Cognito access token
         const payload = await verifier.verify(token);
 
-        // Cognito's unique user identifier
-        const cognitoSub = payload.sub;
-
-        // Find corresponding DevSync user
-        const user = await userModel
-            .findOne({
-                $or: [{ cognitoSub }, { cognitoSubAliases: cognitoSub }],
-            })
-            .select("-password");
-
-        if (!user) {
-            return res.status(401).json({
-                message: "User profile not found",
-            });
-        }
-
-        req.user = {
-            id: user.id,
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            cognitoSub: user.cognitoSub,
+        req.cognitoUser = {
+            sub: payload.sub,
         };
 
         next();
@@ -69,4 +47,4 @@ const authMiddleWare = async (req, res, next) => {
     }
 };
 
-module.exports = authMiddleWare;
+module.exports = cognitoMiddleware;

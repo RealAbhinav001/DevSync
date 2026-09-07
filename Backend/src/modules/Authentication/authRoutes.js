@@ -1,17 +1,19 @@
-const express = require("express")
-const {signupController,loginController,getmeController,refreshController,logoutController} = require("./authController.js")
-const authMiddleWare = require("./authmiddleware.js")
+const express = require("express");
+const {
+    getmeController,
+    logoutController,
+    createProfileController,
+} = require("./authController.js");
+
+const authMiddleWare = require("./authmiddleware.js");
+const cognitoMiddleware = require("./cognitoMiddleware.js");
 
 const router = express.Router();
 
-router.post("/signup",signupController)
+router.get("/getme", authMiddleWare, getmeController);
 
-router.get("/getme",authMiddleWare,getmeController)
+router.post("/logout", cognitoMiddleware, logoutController);
 
-router.post("/login",loginController)
-
-router.post("/logout",logoutController)
-
-router.post("/refresh",refreshController)
+router.post("/profile", cognitoMiddleware, createProfileController);
 
 module.exports = router;

@@ -10,14 +10,17 @@ const lineReveal = {
   hidden: { y: "115%" },
   visible: (i) => ({
     y: "0%",
-    transition: { duration: 0.95, ease: [0.16, 1, 0.3, 1], delay: 0.2 + i * 0.13 },
+    transition: {
+      duration: 0.95,
+      ease: [0.16, 1, 0.3, 1],
+      delay: 0.2 + i * 0.13,
+    },
   }),
 };
 
 const Register = () => {
-
-  const navigate = useNavigate()
-  const { register, loading } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const { register, loading, googleLogin } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,17 +28,16 @@ const Register = () => {
     confirmPassword: "",
   });
 
-
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setconfirmPassword] = useState(false)
-  const [error, setError] = useState("")
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setconfirmPassword] = useState(false);
+  const [error, setError] = useState("");
   const togglefirstPassword = () => {
-    setShowPassword(!showPassword)
-  }
+    setShowPassword(!showPassword);
+  };
 
   const togglesecondPassword = () => {
-    setconfirmPassword(!showConfirmPassword)
-  }
+    setconfirmPassword(!showConfirmPassword);
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -51,36 +53,67 @@ const Register = () => {
     setError("");
 
     try {
-
-
-      if (!formData.name.trim() || !formData.email.trim() || !formData.password || !formData.confirmPassword) {
-        setError("Please Fill all fields")
-        return
+      if (
+        !formData.name.trim() ||
+        !formData.email.trim() ||
+        !formData.password ||
+        !formData.confirmPassword
+      ) {
+        setError("Please Fill all fields");
+        return;
       }
 
       if (formData.password.length < 6) {
-        setError("Password should be greater the 6")
-        return
+        setError("Password should be greater the 6");
+        return;
       }
 
       if (formData.password !== formData.confirmPassword) {
-        setError("Password and Confirm Password Should be same")
-        return
+        setError("Password and Confirm Password Should be same");
+        return;
       }
 
-
-      await register({
+      const response = await register({
         name: formData.name,
         email: formData.email,
-        password: formData.password
-      })
+        password: formData.password,
+      });
 
-      navigate("/organization")
+      if (response.nextStep?.signUpStep === "CONFIRM_SIGN_UP") {
+        navigate("/verify-email", {
+          state: {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+          },
+        });
+
+        return;
+      }
+
+      navigate("/organization");
+    } catch (error) {
+      setError(
+        error.response?.data?.message || "Registration Failed Try Again",
+      );
     }
-    catch (error) {
-      setError(error.response?.data?.message || "Registration Failed Try Again")
+  };
+
+  const handleGoogleRegister = async () => {
+    setError("");
+
+    try {
+      await googleLogin();
+    } catch (error) {
+      console.error("GOOGLE REGISTER ERROR:", error);
+
+      setError(
+        error.response?.data?.message ||
+        error.message ||
+        "Google registration failed. Try again.",
+      );
     }
-  }
+  };
 
   return (
     <div className="rgx-page">
@@ -92,7 +125,9 @@ const Register = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         >
-          <Link to="/" className="rgx-brand">DEVSYNC<sup>®</sup></Link>
+          <Link to="/" className="rgx-brand">
+            DEVSYNC<sup>®</sup>
+          </Link>
           <span className="rgx-rail-mid">IDENTITY FORGE — NEW OPERATORS</span>
           <Link to="/login" className="rgx-rail-link">
             HAVE ACCESS? [ LOG IN ]
@@ -141,11 +176,17 @@ const Register = () => {
             transition={{ delay: 0.55, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
             <p className="rgx-side-quote">
-              "Sixty seconds from<br />zero to workspace."
+              "Sixty seconds from
+              <br />
+              zero to workspace."
             </p>
             <div className="rgx-steps">
-              <p style={{ animationDelay: "1s" }} className="done">✓ (01) FORGE IDENTITY</p>
-              <p style={{ animationDelay: "1.7s" }} className="now">● (02) BIRTH AN ORGANIZATION</p>
+              <p style={{ animationDelay: "1s" }} className="done">
+                ✓ (01) FORGE IDENTITY
+              </p>
+              <p style={{ animationDelay: "1.7s" }} className="now">
+                ● (02) BIRTH AN ORGANIZATION
+              </p>
               <p style={{ animationDelay: "2.4s" }}>○ (03) SUMMON THE CREW</p>
             </div>
           </motion.aside>
@@ -154,7 +195,11 @@ const Register = () => {
             onSubmit={handleSubmit}
             initial={{ opacity: 0, y: 34 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45, duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+            transition={{
+              delay: 0.45,
+              duration: 0.85,
+              ease: [0.16, 1, 0.3, 1],
+            }}
           >
             <label className="rgx-field">
               <span className="rgx-label">(01) — OPERATOR_NAME</span>
@@ -190,11 +235,11 @@ const Register = () => {
                     onChange={handleChange}
                     placeholder="min. 6 chars"
                   />
-                  {
-                    showPassword
-                      ? <Eye onClick={togglefirstPassword} className="rgx-eye" />
-                      : <EyeOff onClick={togglefirstPassword} className="rgx-eye" />
-                  }
+                  {showPassword ? (
+                    <Eye onClick={togglefirstPassword} className="rgx-eye" />
+                  ) : (
+                    <EyeOff onClick={togglefirstPassword} className="rgx-eye" />
+                  )}
                 </div>
               </label>
 
@@ -208,11 +253,14 @@ const Register = () => {
                     onChange={handleChange}
                     placeholder="repeat it"
                   />
-                  {
-                    showConfirmPassword
-                      ? <Eye onClick={togglesecondPassword} className="rgx-eye" />
-                      : <EyeOff onClick={togglesecondPassword} className="rgx-eye" />
-                  }
+                  {showConfirmPassword ? (
+                    <Eye onClick={togglesecondPassword} className="rgx-eye" />
+                  ) : (
+                    <EyeOff
+                      onClick={togglesecondPassword}
+                      className="rgx-eye"
+                    />
+                  )}
                 </div>
               </label>
             </div>
@@ -222,6 +270,15 @@ const Register = () => {
             <button type="submit" disabled={loading} className="rgx-submit">
               <span>{loading ? "FORGING PROFILE…" : "INITIALIZE ACCOUNT"}</span>
               <ArrowUpRight size={22} strokeWidth={2.2} />
+            </button>
+
+            <button
+              type="button"
+              disabled={loading}
+              className="lgx-google"
+              onClick={handleGoogleRegister}
+            >
+              <span>CONTINUE WITH GOOGLE</span>
             </button>
 
             <p className="rgx-swap">
@@ -237,7 +294,9 @@ const Register = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2, duration: 0.8 }}
         >
-          <span><i className="rgx-blip" /> FORGE LIVE</span>
+          <span>
+            <i className="rgx-blip" /> FORGE LIVE
+          </span>
           <span>IDENTITY ⟶ ORG ⟶ CREW</span>
           <span>© 2026</span>
         </motion.div>

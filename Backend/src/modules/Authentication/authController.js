@@ -1,191 +1,116 @@
-const express = require("express");
-const userModel = require("./authModels.js")
-const bcrypt = require("bcrypt")
-const jwt = require("jsonwebtoken")
-const config = require("../../config/config.js");
-const cookie = require("cookie-parser")
+const userModel = require("./authModels.js");
 
-const signupController =async (req,res)=>{
-    const {name,email,password} = req.body;
-    const isAlreadyRegister = await userModel.findOne({
-        $or:[
-            {email}
-        ]
-    })
+const getmeController = async (req, res) => {
+    try {
+        const user = await userModel
+            .findById(req.user.id)
+            .select("-password");
 
-    if(isAlreadyRegister){
-        return res.status(400).json({
-            message:"User already exits"
-        })
-    }
-
-    const hashedPassword = await bcrypt.hash(password,10);
-    const user = await userModel.create({
-        name,
-        email,
-        password:hashedPassword
-    })
-
-    const accessToken = jwt.sign({
-        id:user.id
-    },config.SECRET_KEY,{
-        expiresIn:"15m"
-    })
-
-    const refreshToken = jwt.sign({
-        id:user.id
-    },config.SECRET_KEY,{
-        expiresIn:"7d"
-    })
-
-    res.cookie("refreshToken",refreshToken,{
-        httpOnly:true,
-        secure:false,
-        sameSite:"strict",
-        maxAge:7*24*60*60*1000
-    })
-
-    user.password = undefined
-
-    res.status(201).json({
-        message:"user successfull created",
-        user,
-        accessToken
-    })
-    
-}
-
-const loginController = async (req,res)=>{
-    const {email,password} = req.body
-    try{
-        const user = await userModel.findOne({
-            $or:[
-                {email}
-            ]
-        })
-        if(!user){
-            return res.status(400).json({
-                message:"User Not Found"
-            })
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+            });
         }
-        const pass = await bcrypt.compare(password,user.password)
-
-        if(!pass){
-            return res.status(400).json({
-                message:"Check your credentials"
-            })
-        }
-
-        const accessToken = jwt.sign({
-            id:user.id
-        },config.SECRET_KEY,{
-            expiresIn:"15m"
-        })
-
-        const refreshToken = jwt.sign({
-            id:user.id
-        },config.SECRET_KEY,{
-            expiresIn:"7d"
-        })
-
-        res.cookie("refreshToken",refreshToken,{
-        httpOnly:true,
-        secure:false,
-        sameSite:"strict",
-        maxAge:7*24*60*60*1000
-        })
-
-        user.password = undefined;
 
         res.status(200).json({
-            message:"User Found",
+            message: "User successfully found",
             user,
-            accessToken
-        })
-    }
-    catch(error){
+        });
+    } catch (error) {
         res.status(500).json({
-            message:error.message
-        })
+            message: error.message,
+        });
     }
-}
+};
 
-const getmeController = async (req,res)=>{
-    try{
-        const user = await userModel.findById(
-            req.user.id
-        )
-
-        if(!user){
-           return res.status(400).json({
-                message:"User not found"
-            })
-        }
-        
-        user.password = undefined
-
+const logoutController = (req, res) => {
+    try {
         res.status(200).json({
-            message:"User successfully found",
-            user
-        })
-    }
-    catch(error){
+            message: "User successfully logged out",
+        });
+    } catch (error) {
         res.status(500).json({
-            message:error.message
-        })
+            message: "Some problem occurred",
+        });
     }
+};
 
-}
+const createProfileController = async (req, res) => {
+    try {
+        const { name, email } = req.body;
 
-const logoutController = (req,res)=>{
-    try{
-        res.clearCookie("refreshToken")
-
-        res.status(200).json({
-            message:"User successfull Logout"
-        })
-    }
-    catch(error){
-        res.status(500).json({
-            message:"Some problem occur"
-        })
-    }
-}
-
-const refreshController = (req,res)=>{
-    try{
-        const refreshToken = req.cookies.refreshToken
-        if(!refreshToken){
-            return res.status(401).json({
-                message:"Invalid"
-            })
+        if (!name || !name.trim()) {
+            return res.status(400).json({
+                message: "Name is required",
+            });
         }
 
-        const decoded = jwt.verify(refreshToken,config.SECRET_KEY)
+        if (!email || !email.trim()) {
+            return res.status(400).json({
+                message: "Email is required",
+            });
+        }
 
-        const accessToken = jwt.sign({
-            id:decoded.id
-        },config.SECRET_KEY,{
-            expiresIn:"15m"
-        })
+        const cognitoSub = req.cognitoUser.sub;
+        const normalizedEmail = email.trim().toLowerCase();
 
-        res.status(200).json({
-            message:"Access Token Created",
-            accessToken
-        })
+        // Check whether this Cognito identity is already linked
+        let user = await userModel.findOne({
+            $or: [
+                { cognitoSub },
+                { cognitoSubAliases: cognitoSub },
+            ],
+        });
+
+        if (user) {
+            return res.status(200).json({
+                message: "User profile already exists",
+                user,
+            });
+        }
+
+        // Check whether the email already belongs to a DevSync account
+        const existingEmailUser = await userModel.findOne({
+            email: normalizedEmail,
+        });
+
+        if (existingEmailUser) {
+            // Link this Cognito identity to the existing DevSync account
+            if (
+                existingEmailUser.cognitoSub !== cognitoSub &&
+                !existingEmailUser.cognitoSubAliases.includes(cognitoSub)
+            ) {
+                existingEmailUser.cognitoSubAliases.push(cognitoSub);
+                await existingEmailUser.save();
+            }
+
+            return res.status(200).json({
+                message: "Cognito identity linked to existing user",
+                user: existingEmailUser,
+            });
+        }
+
+        // Create a completely new DevSync account
+        user = await userModel.create({
+            cognitoSub,
+            name: name.trim(),
+            email: normalizedEmail,
+        });
+
+        return res.status(201).json({
+            message: "User profile successfully created",
+            user,
+        });
+    } catch (error) {
+        console.error("Create profile error:", error.message);
+
+        return res.status(500).json({
+            message: error.message,
+        });
     }
-    catch(error){
-        res.status(401).json({
-            message:error.message
-        })
-    }
-
-}
-
+};
 module.exports = {
-    signupController,
-    loginController,
     getmeController,
-    refreshController,
-    logoutController
-}
+    logoutController,
+    createProfileController,
+};

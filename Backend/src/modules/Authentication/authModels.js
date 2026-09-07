@@ -1,25 +1,41 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-    name:{
-        type:String,
-        required:true,
+const userSchema = new mongoose.Schema(
+    {
+        // Primary Cognito identity
+        cognitoSub: {
+            type: String,
+            unique: true,
+            sparse: true,
+        },
+
+        // Additional Cognito identities linked to this DevSync account
+        cognitoSubAliases: {
+            type: [String],
+            default: [],
+        },
+
+        name: {
+            type: String,
+            required: true,
+        },
+
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+
+        password: {
+            type: String,
+            required: false,
+        },
     },
-
-    email:{
-        type:String,
-        required:true,
-        unique:true
-    },
-
-    password:{
-        type:String,
-        required:true,
+    {
+        timestamps: true,
     }
-},{
-    timestamps:true
-})
+);
 
-const User = mongoose.model("User",userSchema);
+const User = mongoose.model("User", userSchema);
 
-module.exports = User
+module.exports = User;
