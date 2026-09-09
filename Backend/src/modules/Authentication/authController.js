@@ -6,7 +6,8 @@ const config = require("../../config/config.js");
 const cookie = require("cookie-parser")
 
 const signupController =async (req,res)=>{
-    const {name,email,password} = req.body;
+   try{
+     const {name,email,password} = req.body;
     const isAlreadyRegister = await userModel.findOne({
         $or:[
             {email}
@@ -40,8 +41,8 @@ const signupController =async (req,res)=>{
 
     res.cookie("refreshToken",refreshToken,{
         httpOnly:true,
-        secure:false,
-        sameSite:"strict",
+        secure:config.SECURE,
+        sameSite:config.SAMESITE,
         maxAge:7*24*60*60*1000
     })
 
@@ -52,6 +53,12 @@ const signupController =async (req,res)=>{
         user,
         accessToken
     })
+   }
+   catch(error){
+    res.status(500).json({
+        message:error.message
+    })
+   }
     
 }
 
@@ -90,8 +97,8 @@ const loginController = async (req,res)=>{
 
         res.cookie("refreshToken",refreshToken,{
         httpOnly:true,
-        secure:false,
-        sameSite:"strict",
+        secure:config.SECURE,
+        sameSite:config.SAMESITE,
         maxAge:7*24*60*60*1000
         })
 
@@ -139,7 +146,11 @@ const getmeController = async (req,res)=>{
 
 const logoutController = (req,res)=>{
     try{
-        res.clearCookie("refreshToken")
+        res.clearCookie("refreshToken",{
+            httpOnly:true,
+            secure:config.SECURE,
+            sameSite:config.SAMESITE
+        })
 
         res.status(200).json({
             message:"User successfull Logout"

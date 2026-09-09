@@ -13,12 +13,12 @@ const searchFilterRoutes = require("./modules/SearchAndFilter/searchFilterroutes
 const notificationRoutes = require("./modules/notification/notificationRoutes.js")
 const chatRoutes = require("./modules/chats/teamChatRoutes.js")
 const inviteRoutes = require("./modules/Invitation/invitationRoutes.js")
-
+const config = require("./config/config.js")
 
 const app = express();
 
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin:config.CLIENT_URL,
     credentials:true
 }));
 app.use(express.json());

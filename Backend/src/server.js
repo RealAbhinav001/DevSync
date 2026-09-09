@@ -7,7 +7,7 @@ const {setIo} = require("./modules/realTime/socketManager.js")
 const {Server} = require("socket.io")
 const io = new Server(server,{
     cors:{
-        origin:"*",
+        origin:config.CLIENT_URL,
         methods:["GET","POST"]
     }
     
@@ -22,7 +22,7 @@ const startServer = async ()=>{
 
         setUpSocket(io)
 
-        server.listen(5000,()=>{
+        server.listen(config.PORT || 5000,()=>{
             console.log("Backend Running")
         })
     }
