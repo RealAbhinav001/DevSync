@@ -6,12 +6,12 @@ import Organization from "../pages/Organization/organization"
 import ProtectedRoute from "./ProtectedRoutes"
 import OrganizationDetail from "../pages/OrganizationDetails/organizationDetail"
 import OrganizationMember from "../pages/Member/Member"
-import Invites from "../pages/Invites/invites"
+import Invites from "../pages/Invites/Invites"
 import OrganizationInvites from "../pages/OrganizationInvites/Organization"
 import Team from "../pages/Team/Team"
 import TeamDetail from "../pages/TeamDetails/TeamDetail"
 import Project from "../pages/Project/Project"
-import Task from "../pages/Task/task"
+import Task from "../pages/Task/Task"
 
 const AppRoutes = ()=>{
     return(
