@@ -12,6 +12,7 @@ import Team from "../pages/Team/Team"
 import TeamDetail from "../pages/TeamDetails/TeamDetail"
 import Project from "../pages/Project/Project"
 import Task from "../pages/Task/Task"
+import NotFound from "../pages/NotFound/NotFound"
 
 const AppRoutes = ()=>{
     return(
@@ -69,6 +70,7 @@ const AppRoutes = ()=>{
                     <Task/>
                 </ProtectedRoute>
             }/>
+            <Route path="*" element= {<NotFound/>}/>
         </Routes>
     )
 }
