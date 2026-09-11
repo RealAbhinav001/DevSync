@@ -16,6 +16,7 @@ const inviteRoutes = require("./modules/Invitation/invitationRoutes.js")
 const config = require("./config/config.js")
 const apiError = require("./utils/apiError.js")
 const errorMiddleWare = require("./middleware/errorMiddleWare.js")
+const morgan = require("morgan")
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookie());
+app.use(morgan("dev"))
 app.use("/uploads", express.static("uploads"));
 
 app.get("/",(req,res)=>{
