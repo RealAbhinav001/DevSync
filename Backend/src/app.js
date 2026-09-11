@@ -17,19 +17,22 @@ const config = require("./config/config.js")
 const apiError = require("./utils/apiError.js")
 const errorMiddleWare = require("./middleware/errorMiddleWare.js")
 const morgan = require("morgan")
+const helmet = require("helmet")
 
 const app = express()
 
+app.use(helmet())
 app.use(
     cors({
         origin: config.CLIENT_URL,
         credentials: true
     })
 )
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.json({limit:'10kb'}))
+app.use(express.urlencoded({ extended: true,limit:'15kb' }))
 app.use(cookie())
 app.use(morgan("dev"))
+
 app.use("/uploads", express.static("uploads"))
 
 app.get("/", (req, res) => {
