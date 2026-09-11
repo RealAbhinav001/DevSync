@@ -14,6 +14,7 @@ const notificationRoutes = require("./modules/notification/notificationRoutes.js
 const chatRoutes = require("./modules/chats/teamChatRoutes.js")
 const inviteRoutes = require("./modules/Invitation/invitationRoutes.js")
 const config = require("./config/config.js")
+const apiError = require("./utils/apiError.js")
 const errorMiddleWare = require("./middleware/errorMiddleWare.js")
 
 const app = express();
@@ -43,6 +44,9 @@ app.use("/api/search",searchFilterRoutes)
 app.use("/api/notify",notificationRoutes)
 app.use("/api/chat",chatRoutes)
 app.use("/api/invitation",inviteRoutes)
+app.use((req,res,next)=>{
+    throw new apiError(404,`Route ${req.originalUrl} not found`)
+})
 app.use(errorMiddleWare)
 
 module.exports = app;
