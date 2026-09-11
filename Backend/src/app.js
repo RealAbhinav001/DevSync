@@ -28,8 +28,8 @@ app.use(
         credentials: true
     })
 )
-app.use(express.json({limit:'10kb'}))
-app.use(express.urlencoded({ extended: true,limit:'15kb' }))
+app.use(express.json({ limit: "10kb" }))
+app.use(express.urlencoded({ extended: true, limit: "15kb" }))
 app.use(cookie())
 app.use(morgan("dev"))
 

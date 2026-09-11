@@ -12,6 +12,8 @@ const {
     listOrganizationInvitesController,
     listuserInvitesController
 } = require("./invitationController.js")
+const validator = require("../../middleware/validator.js")
+const { inviteSchema } = require("../../validators/invitationValidator.js")
 
 const router = express.Router()
 
@@ -20,6 +22,7 @@ router.post(
     authMiddleware,
     organizationMiddleware,
     organizationOwnerMiddleware,
+    validator(inviteSchema),
     createInvitationController
 )
 router.post("/accept/:token", authMiddleware, acceptInvitationController)

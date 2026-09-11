@@ -12,10 +12,12 @@ const {
     organizationMiddleware,
     organizationOwnerMiddleware
 } = require("./organizationMiddleware.js")
+const validator = require("../../middleware/validator.js")
+const { createOrgSchema, addMemberSchema } = require("../../validators/orgValidator.js")
 
 const router = express.Router()
 
-router.post("/create", authMiddleWare, createController)
+router.post("/create", authMiddleWare, validator(createOrgSchema), createController)
 router.get("/getorganization", authMiddleWare, getController)
 router.get("/ownorganization", authMiddleWare, ownerController)
 router.get("/:id", authMiddleWare, organizationMiddleware, singleOrganizationController)
@@ -24,6 +26,7 @@ router.post(
     authMiddleWare,
     organizationMiddleware,
     organizationOwnerMiddleware,
+    validator(addMemberSchema),
     addMemberController
 )
 router.get("/:id/members", authMiddleWare, organizationMiddleware, getOrganizationMembersController)

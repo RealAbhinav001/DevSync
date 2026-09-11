@@ -7,14 +7,16 @@ const {
     logoutController
 } = require("./authController.js")
 const authMiddleWare = require("./authmiddleware.js")
+const validator = require("../../middleware/validator.js")
+const { User, login } = require("../../validators/authValidator.js")
 
 const router = express.Router()
 
-router.post("/signup", signupController)
+router.post("/signup", validator(User), signupController)
 
 router.get("/getme", authMiddleWare, getmeController)
 
-router.post("/login", loginController)
+router.post("/login", validator(login), loginController)
 
 router.post("/logout", logoutController)
 
