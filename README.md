@@ -10,8 +10,8 @@ A real-time collaboration platform that collapses your organizations, teams, pro
 
 <br/>
 
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-dev--sync.vercel.app-FF4D2E?style=for-the-badge)](https://dev-sync-eta.vercel.app)
-[![API](https://img.shields.io/badge/⚡_API-Render-46E3B7?style=for-the-badge)](https://devsync-b3mx.onrender.com)
+[![Live Demo](https://img.shields.io/badge/LIVE_DEMO-dev--sync.vercel.app-FF4D2E?style=for-the-badge&logo=vercel&logoColor=white)](https://dev-sync-eta.vercel.app)
+[![API](https://img.shields.io/badge/API-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://devsync-b3mx.onrender.com)
 
 <br/>
 
@@ -34,7 +34,7 @@ A real-time collaboration platform that collapses your organizations, teams, pro
 Built on the **MERN stack** with **Socket.io** powering the real-time layer: chat, notifications and board updates propagate instantly across every connected client.
 
 <div align="center">
-<img src="Frontend/src/assets/images/devsync-dashboard-preview-full.png" alt="DevSync Dashboard" width="90%" />
+<img src="screenshots/app.png" alt="DevSync — live app" width="90%" />
 </div>
 
 ---
