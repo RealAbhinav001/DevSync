@@ -2,78 +2,58 @@ const mongoose = require("mongoose")
 const projectModel = require("../Projects/projectModel.js")
 const teamModel = require("../Team/teamModel.js")
 const orgModel = require("../Organization/orgModels.js")
+const asyncHandler = require("../../utils/asyncHandler.js")
+const ApiError = require("../../utils/apiError.js")
 
-const project = async (req,res,next)=>{
-    try{
-        const projectId = req.params.projectId
-        const teamId = req.params.teamId
+const project = asyncHandler(async (req,res,next)=>{
+    const projectId = req.params.projectId
+    const teamId = req.params.teamId
 
-        let team;
+    let team;
 
-        if(projectId){
-            if(!mongoose.isObjectIdOrHexString(projectId)){
-                return res.status(400).json({
-                    message:"Object Id is not valid."
-                })
-            }
-
-            const project = await projectModel.findById(projectId).populate("team");
-
-            if(!project){
-                return res.status(404).json({
-                    message:"Project not found."
-                })
-            }
-
-            team = project.team;
-
-            req.project = project
-        }
-        else if(teamId){
-            if(!mongoose.isObjectIdOrHexString(teamId)){
-                return res.status(400).json({
-                    message:"Team id is not found."
-                })
-            }
-
-            team = await teamModel.findById(teamId)
-
-            if(!team){
-                return res.status(404).json({
-                    message:"Team not Found."
-                })
-            }
-        }
-        else{
-            return res.status(404).json({
-                message:"Project and Team Id is not found"
-            })
+    if(projectId){
+        if(!mongoose.isObjectIdOrHexString(projectId)){
+            throw new ApiError(400,"Object Id is not valid.")
         }
 
-        const org = await orgModel.findById(team.organization)
-        if(!org){
-            return res.status(404).json({
-                message:"Organization not found."
-            })
+        const project = await projectModel.findById(projectId).populate("team");
+
+        if(!project){
+            throw new ApiError(404,"Project not found.")
         }
 
-        const isOwner = req.user.id.toString() === org.owner.toString()
-        if(!isOwner){
-            return res.status(403).json({
-                message:"You are not Owner of the organization."
-            })
-        }
+        team = project.team;
 
-        req.team = team;
-
-        next();
-
+        req.project = project
     }
-    catch(error){
-        res.status(500).json({
-            message:error.message
-        })
+    else if(teamId){
+        if(!mongoose.isObjectIdOrHexString(teamId)){
+            throw new ApiError(400,"Team id is not found.")
+        }
+
+        team = await teamModel.findById(teamId)
+
+        if(!team){
+            throw new ApiError(404,"Team not Found.")
+        }
     }
-}   
+    else{
+        throw new ApiError(404,"Project and Team Id is not found")
+    }
+
+    const org = await orgModel.findById(team.organization)
+    if(!org){
+        throw new ApiError(404,"Organization not found.")
+    }
+
+    const isOwner = req.user.id.toString() === org.owner.toString()
+    if(!isOwner){
+        throw new ApiError(403,"You are not Owner of the organization.")
+    }
+
+    req.team = team;
+
+    next();
+})
 
 module.exports = project

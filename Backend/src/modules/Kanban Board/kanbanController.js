@@ -1,46 +1,37 @@
 const express = require("express")
 const projectModel = require("../Projects/projectModel.js")
+const asyncHandler = require("../../utils/asyncHandler.js")
+const ApiError = require("../../utils/apiError.js")
 
-const statusController = async (req,res)=>{
-    try{
-        const projectId = req.params.projectId
-        if(!projectId){
-            return res.status(400).json({
-                message:"Project ID not found"
-            })
-        }
-
-        const project = await projectModel.findById(projectId).populate("tasks")
-        if(!project){
-            return res.status(404).json({
-                message:"Project not found"
-            })
-        }
-
-        const board = project.tasks.reduce(
-            (acc,task)=>{
-                acc[task.status].push(task)
-
-                return acc
-            },{
-                "to-do":[],
-                "in-progress":[],
-                review:[],
-                done:[]
-            }
-        )
-
-        res.status(200).json({
-            message:"Task Status",
-            board
-        })
+const statusController = asyncHandler(async (req,res)=>{
+    const projectId = req.params.projectId
+    if(!projectId){
+        throw new ApiError(400,"Project ID not found")
     }
-    catch(error){
-        res.status(500).json({
-            message:error.message
-        })
+
+    const project = await projectModel.findById(projectId).populate("tasks")
+    if(!project){
+        throw new ApiError(404,"Project not found")
     }
-}
+
+    const board = project.tasks.reduce(
+        (acc,task)=>{
+            acc[task.status].push(task)
+
+            return acc
+        },{
+            "to-do":[],
+            "in-progress":[],
+            review:[],
+            done:[]
+        }
+    )
+
+    res.status(200).json({
+        message:"Task Status",
+        board
+    })
+})
 
 module.exports = {
     statusController

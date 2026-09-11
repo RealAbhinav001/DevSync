@@ -2,241 +2,191 @@ const express = require("express");
 const orgModel = require("./orgModels.js");
 const userModel = require("../Authentication/authModels.js");
 const { default: mongoose } = require("mongoose");
+const asyncHandler = require("../../utils/asyncHandler.js");
+const ApiError = require("../../utils/apiError.js");
 
 const escapeFunction = (str)=>{
   return str.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')
 }
 
-const createController = async (req, res) => {
-  try {
-    const user = req.user.id;
-    const { name, description } = req.body;
+const createController = asyncHandler(async (req, res) => {
+  const user = req.user.id;
+  const { name, description } = req.body;
 
-    if (!user) {
-      return res.status(400).json({
-        message: "Invalid User",
-      });
-    }
-
-    const organization = await orgModel.create({
-      name,
-      description,
-      owner: user,
-      members: [user],
-    });
-
-    res.status(200).json({
-      message: "Organization Successfull Created",
-      organization,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+  if (!user) {
+    throw new ApiError(400, "Invalid User");
   }
-};
 
-const getController = async (req, res) => {
-  try {
-    const user = req.user.id;
+  const organization = await orgModel.create({
+    name,
+    description,
+    owner: user,
+    members: [user],
+  });
 
-    if (!user) {
-      return res.status(400).json({
-        message: "Invalid User",
-      });
-    }
+  res.status(200).json({
+    message: "Organization Successfull Created",
+    organization,
+  });
+});
 
-    const orgList = await orgModel.find({ members: user });
+const getController = asyncHandler(async (req, res) => {
+  const user = req.user.id;
 
-    res.status(200).json({
-      message: "Organization Found",
-      orgList,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Organization not found",
-    });
+  if (!user) {
+    throw new ApiError(400, "Invalid User");
   }
-};
 
-const ownerController = async (req, res) => {
-  try {
-    const user = req.user.id;
-    if (!user) {
-      return res.status(400).json({
-        message: "User not found",
-      });
-    }
+  const orgList = await orgModel.find({ members: user });
 
-    const ownOrg = await orgModel.find({ owner: user });
+  res.status(200).json({
+    message: "Organization Found",
+    orgList,
+  });
+});
 
-    if (ownOrg.length === 0) {
-      return res.status(401).json({
-        message: "User doesn't have any organization yet",
-      });
-    }
-
-    res.status(200).json({
-      message: "User own Organization",
-      ownOrg,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+const ownerController = asyncHandler(async (req, res) => {
+  const user = req.user.id;
+  if (!user) {
+    throw new ApiError(400, "User not found");
   }
-};
 
-const singleOrganizationController = async (req, res) => {
-  try {
-    const org = await req.organization.populate("members teams owner");
+  const ownOrg = await orgModel.find({ owner: user });
 
-    res.status(200).json({
-      message: "Organization Found",
-      org,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+  if (ownOrg.length === 0) {
+    throw new ApiError(401, "User doesn't have any organization yet");
   }
-};
 
-const addMemberController = async (req, res) => {
-  try {
-    const { email } = req.body;
+  res.status(200).json({
+    message: "User own Organization",
+    ownOrg,
+  });
+});
 
-    const user = await userModel.findOne({ email });
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
-    }
+const singleOrganizationController = asyncHandler(async (req, res) => {
+  const org = await req.organization.populate("members teams owner");
 
-    const org = req.organization;
+  res.status(200).json({
+    message: "Organization Found",
+    org,
+  });
+});
 
-    const duplicate = org.members.some(
-      (member) => member.toString() === user.id.toString(),
-    );
-    if (duplicate) {
-      return res.status(409).json({
-        message: "User Already Exists in this organization",
-      });
-    }
+const addMemberController = asyncHandler(async (req, res) => {
+  const { email } = req.body;
 
-    org.members.push(user._id);
-
-    await org.save();
-
-    res.status(200).json({
-      message: "User Successfully Added",
-      org,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+  const user = await userModel.findOne({ email });
+  if (!user) {
+    throw new ApiError(404, "User not found");
   }
-};
 
-const getOrganizationMembersController = async (req, res) => {
-  try {
+  const org = req.organization;
 
-    const page = req.query.page
-    const limit = req.query.limit
-    const search = req.query.search
-    const org = req.organization;
-
-    const members = org.members;
-
-    const isOwner = org.owner.toString() === req.user._id.toString()
-
-    const memberFilter = {
-      _id:{
-        $in:members
-      }
-    }
-
-    let normalizedValue =""
-    if(typeof search === "string"){
-      normalizedValue= search.trim()
-    }
-
-    if(normalizedValue){
-      let escapedValue = escapeFunction(normalizedValue)
-      memberFilter.$or = [{name:{$regex:escapedValue,$options:"i"}},{email:{$regex:escapedValue,$options:"i"}}]
-    }
-
-    let normalizedPage = Number.parseInt(page,10)
-    
-    if(!normalizedPage){
-      normalizedPage = 1
-    }
-    else if(normalizedPage<1){
-      normalizedPage =1
-    }
-
-    let normalizedLimit = Number.parseInt(limit,10)
-
-    if(!normalizedLimit){
-      normalizedLimit = 10
-    }
-    else if(normalizedLimit<1){
-      normalizedLimit = 10
-    }
-    else if(normalizedLimit>50){
-      normalizedLimit = 50
-    }
-
-    const totalMembers = await userModel.countDocuments(memberFilter)
-
-    const totalPages = Math.ceil(totalMembers/normalizedLimit)
-
-    if(normalizedPage > totalPages){
-      normalizedPage = totalPages
-    }
-
-    if(normalizedPage <1){
-      normalizedPage = 1
-    }
-
-    const skip = (normalizedPage-1) * normalizedLimit 
-
-
-    const users = await userModel
-      .find(memberFilter)
-      .select("_id name email createdAt").sort({createdAt:-1}).skip(skip).limit(normalizedLimit)
-      .lean();
-
-    const memberDetails = users.map((user) => ({
-      ...user,
-      role: user._id.toString() === org.owner.toString() ? "owner" : "member",
-    }));
-
-    
-
-
-    const paginationObject = {
-      page:normalizedPage,
-      limit:normalizedLimit,
-      totalMembers:totalMembers,
-      totalPages:totalPages,
-      hasNextPage : normalizedPage < totalPages,
-      hasPreviousPage : normalizedPage > 1
-    }
-
-    res.status(200).json({
-      message: "Members of Organization Found",
-      members: memberDetails,
-      pagination:paginationObject,
-      isOwner
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+  const duplicate = org.members.some(
+    (member) => member.toString() === user.id.toString(),
+  );
+  if (duplicate) {
+    throw new ApiError(409, "User Already Exists in this organization");
   }
-};
+
+  org.members.push(user._id);
+
+  await org.save();
+
+  res.status(200).json({
+    message: "User Successfully Added",
+    org,
+  });
+});
+
+const getOrganizationMembersController = asyncHandler(async (req, res) => {
+  const page = req.query.page
+  const limit = req.query.limit
+  const search = req.query.search
+  const org = req.organization;
+
+  const members = org.members;
+
+  const isOwner = org.owner.toString() === req.user._id.toString()
+
+  const memberFilter = {
+    _id:{
+      $in:members
+    }
+  }
+
+  let normalizedValue =""
+  if(typeof search === "string"){
+    normalizedValue= search.trim()
+  }
+
+  if(normalizedValue){
+    let escapedValue = escapeFunction(normalizedValue)
+    memberFilter.$or = [{name:{$regex:escapedValue,$options:"i"}},{email:{$regex:escapedValue,$options:"i"}}]
+  }
+
+  let normalizedPage = Number.parseInt(page,10)
+
+  if(!normalizedPage){
+    normalizedPage = 1
+  }
+  else if(normalizedPage<1){
+    normalizedPage =1
+  }
+
+  let normalizedLimit = Number.parseInt(limit,10)
+
+  if(!normalizedLimit){
+    normalizedLimit = 10
+  }
+  else if(normalizedLimit<1){
+    normalizedLimit = 10
+  }
+  else if(normalizedLimit>50){
+    normalizedLimit = 50
+  }
+
+  const totalMembers = await userModel.countDocuments(memberFilter)
+
+  const totalPages = Math.ceil(totalMembers/normalizedLimit)
+
+  if(normalizedPage > totalPages){
+    normalizedPage = totalPages
+  }
+
+  if(normalizedPage <1){
+    normalizedPage = 1
+  }
+
+  const skip = (normalizedPage-1) * normalizedLimit
+
+
+  const users = await userModel
+    .find(memberFilter)
+    .select("_id name email createdAt").sort({createdAt:-1}).skip(skip).limit(normalizedLimit)
+    .lean();
+
+  const memberDetails = users.map((user) => ({
+    ...user,
+    role: user._id.toString() === org.owner.toString() ? "owner" : "member",
+  }));
+
+  const paginationObject = {
+    page:normalizedPage,
+    limit:normalizedLimit,
+    totalMembers:totalMembers,
+    totalPages:totalPages,
+    hasNextPage : normalizedPage < totalPages,
+    hasPreviousPage : normalizedPage > 1
+  }
+
+  res.status(200).json({
+    message: "Members of Organization Found",
+    members: memberDetails,
+    pagination:paginationObject,
+    isOwner
+  });
+});
 
 module.exports = {
   createController,
