@@ -26,7 +26,7 @@ const signupController = asyncHandler(async (req, res) => {
         {
             id: user.id
         },
-        config.SECRET_KEY,
+        config.ACCESS_KEY,
         {
             expiresIn: "15m"
         }
@@ -36,7 +36,7 @@ const signupController = asyncHandler(async (req, res) => {
         {
             id: user.id
         },
-        config.SECRET_KEY,
+        config.REFRESH_KEY,
         {
             expiresIn: "7d"
         }
@@ -76,7 +76,7 @@ const loginController = asyncHandler(async (req, res) => {
         {
             id: user.id
         },
-        config.SECRET_KEY,
+        config.ACCESS_KEY,
         {
             expiresIn: "15m"
         }
@@ -86,7 +86,7 @@ const loginController = asyncHandler(async (req, res) => {
         {
             id: user.id
         },
-        config.SECRET_KEY,
+        config.REFRESH_KEY,
         {
             expiresIn: "7d"
         }
@@ -143,7 +143,7 @@ const refreshController = asyncHandler(async (req, res) => {
 
     let decoded
     try {
-        decoded = jwt.verify(refreshToken, config.SECRET_KEY)
+        decoded = jwt.verify(refreshToken, config.REFRESH_KEY)
     } catch (error) {
         throw new ApiError(401, error.message)
     }
@@ -152,7 +152,7 @@ const refreshController = asyncHandler(async (req, res) => {
         {
             id: decoded.id
         },
-        config.SECRET_KEY,
+        config.ACCESS_KEY,
         {
             expiresIn: "15m"
         }

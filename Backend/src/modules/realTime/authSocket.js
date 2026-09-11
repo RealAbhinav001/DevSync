@@ -9,7 +9,7 @@ const authSocket = async (socket, next) => {
             return next(new Error("Token is not found"))
         }
 
-        const decoded = jwt.verify(token, config.SECRET_KEY)
+        const decoded = jwt.verify(token, config.ACCESS_KEY)
         if (!decoded) {
             return next(new Error("Token is Invalid"))
         }

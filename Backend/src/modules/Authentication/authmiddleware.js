@@ -17,7 +17,7 @@ const authMiddleWare = asyncHandler(async (req, res, next) => {
 
     let decoded
     try {
-        decoded = jwt.verify(token, config.SECRET_KEY)
+        decoded = jwt.verify(token, config.ACCESS_KEY)
     } catch (error) {
         throw new ApiError(401, error.message)
     }
