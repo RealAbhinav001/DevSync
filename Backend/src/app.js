@@ -18,10 +18,13 @@ const apiError = require("./utils/apiError.js")
 const errorMiddleWare = require("./middleware/errorMiddleWare.js")
 const morgan = require("morgan")
 const helmet = require("helmet")
+const {generalLimiter} = require("./middleware/rateLimiter.js")
 
 const app = express()
+app.set('trust proxy', 1)
 
 app.use(helmet())
+app.use(generalLimiter)
 app.use(
     cors({
         origin: config.CLIENT_URL,
