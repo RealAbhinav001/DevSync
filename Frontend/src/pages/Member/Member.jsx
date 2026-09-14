@@ -4,7 +4,6 @@ import { useParams, Link } from "react-router-dom";
 import { getOrganizationMembers } from "../../api/organizationApi"
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Asterisk, Search, UsersRound } from "lucide-react";
-import DashNav from "../../components/layout/Dashboard Navbar/dashNav";
 
 const joinedDate = new Intl.DateTimeFormat("en-IN")
 
@@ -56,8 +55,6 @@ const OrganizationMember = () => {
     return (
         <div className="mbx-page">
             <div className="mbx-frame">
-
-                <DashNav />
 
                 {/* back rail */}
                 <motion.div

@@ -1,7 +1,7 @@
 import "./organizationDetail.css";
 import { useParams } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
-import DashNav from "../../components/layout/Dashboard Navbar/dashNav";
+import NotificationBell from "../../components/layout/NotificationBell/NotificationBell"
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -215,8 +215,6 @@ const OrganizationDetail = () => {
   return (
     <div className="dtx-page">
       <div className="dtx-frame">
-        <DashNav user={user?.name} />
-
         {/* back rail */}
         <motion.div
           className="dtx-backrail"
@@ -277,9 +275,7 @@ const OrganizationDetail = () => {
               </span>
             </div>
             <div className="dtx-hero-actions">
-              <button type="button" className="dtx-bell" aria-label="Notifications">
-                <Bell size={17} />
-              </button>
+              <NotificationBell/>
               {isOwner && (
                 <button type="button" className="dtx-bell" aria-label="Settings">
                   <Settings size={17} />

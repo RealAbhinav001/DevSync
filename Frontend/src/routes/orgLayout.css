@@ -1,0 +1,11 @@
+/* ── Org layout — shared navbar shell (cream + centered frame) ── */
+
+.org-navshell {
+    background: var(--paper);
+    color: var(--char);
+}
+
+.org-navframe {
+    width: min(1280px, calc(100% - 48px));
+    margin: 0 auto;
+}

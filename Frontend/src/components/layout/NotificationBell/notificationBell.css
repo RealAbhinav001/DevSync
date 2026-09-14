@@ -1,0 +1,218 @@
+/* ── DevSync Notification Bell — matches the org action rail ── */
+
+.nbell {
+    position: relative;
+    display: inline-flex;
+}
+
+/* bell button — mirrors .dtx-bell (42px circle) */
+.nbell-btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--char, #141412);
+    border: 1.5px solid var(--char, #141412);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nbell-btn:hover {
+    background: var(--char, #141412);
+    color: var(--paper, #efeae2);
+    transform: translateY(-2px);
+}
+
+/* unread badge */
+.nbell-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    display: grid;
+    place-items: center;
+    border-radius: 99px;
+    background: #ff4b1e;
+    color: #fff;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.6rem;
+    font-weight: 700;
+    line-height: 1;
+    border: 2px solid var(--paper, #efeae2);
+}
+
+/* ---------- dropdown panel ---------- */
+.nbell-panel {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: 340px;
+    max-height: 430px;
+    display: flex;
+    flex-direction: column;
+    background: var(--paper, #efeae2);
+    border: 1.5px solid var(--char, #141412);
+    border-radius: 14px;
+    box-shadow: 0 18px 44px -18px rgba(20, 20, 18, 0.45);
+    overflow: hidden;
+    z-index: 60;
+}
+
+.nbell-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(20, 20, 18, 0.12);
+}
+
+.nbell-title {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--char, #141412);
+}
+
+.nbell-count {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #ff4b1e;
+}
+
+/* ---------- list ---------- */
+.nbell-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+}
+
+.nbell-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 13px 16px;
+    border-bottom: 1px solid rgba(20, 20, 18, 0.07);
+    transition: background 0.18s ease;
+}
+
+.nbell-item:last-child {
+    border-bottom: none;
+}
+
+.nbell-item:hover {
+    background: rgba(255, 75, 30, 0.05);
+}
+
+/* status dot */
+.nbell-dot {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    margin-top: 5px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1.5px solid rgba(20, 20, 18, 0.25);
+}
+
+/* unread → coral dot, bolder text, tint */
+.nbell-unread {
+    background: rgba(255, 75, 30, 0.04);
+}
+
+.nbell-unread .nbell-dot {
+    background: #ff4b1e;
+    border-color: #ff4b1e;
+}
+
+.nbell-unread .nbell-msg {
+    font-weight: 600;
+}
+
+.nbell-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+}
+
+.nbell-msg {
+    margin: 0;
+    font-family: var(--font-body, "Inter", sans-serif);
+    font-size: 0.82rem;
+    line-height: 1.35;
+    color: var(--char, #141412);
+}
+
+.nbell-time {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.56rem;
+    letter-spacing: 0.08em;
+    color: var(--char-dim, #55524b);
+    text-transform: uppercase;
+}
+
+/* mark-read button */
+.nbell-read {
+    flex-shrink: 0;
+    align-self: center;
+    padding: 5px 9px;
+    background: transparent;
+    border: 1px solid rgba(20, 20, 18, 0.2);
+    border-radius: 7px;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.54rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--char-dim, #55524b);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nbell-read:hover {
+    background: var(--char, #141412);
+    color: var(--paper, #efeae2);
+    border-color: var(--char, #141412);
+}
+
+/* ---------- empty state ---------- */
+.nbell-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--char-dim, #55524b);
+}
+
+.nbell-empty p {
+    margin: 6px 0 0;
+    font-family: var(--font-display, "Syne", sans-serif);
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--char, #141412);
+}
+
+.nbell-empty span {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+    .nbell-panel {
+        width: 290px;
+    }
+}

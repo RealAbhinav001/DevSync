@@ -1,4 +1,4 @@
-import {Routes,Route} from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 import Login from "../pages/Login/login"
 import Register from "../pages/Register/register"
 import Landing from "../pages/landing/Landing"
@@ -13,67 +13,54 @@ import TeamDetail from "../pages/TeamDetails/TeamDetail"
 import Project from "../pages/Project/Project"
 import Task from "../pages/Task/Task"
 import NotFound from "../pages/NotFound/NotFound"
+import OrgLayout from "./orgLayout"
 
-const AppRoutes = ()=>{
-    return(
+const AppRoutes = () => {
+    return (
         <Routes>
-            <Route path="/" element = {<Landing/>}/>
-            <Route path="/register" element={<Register/>}/>
-            <Route path="/login" element={<Login/>}/>
-            <Route path="/organization" element={
-                <ProtectedRoute>
-                    <Organization/>
-                </ProtectedRoute>
-                }/>
+            {/* ── public / non-org routes ── */}
+            <Route path="/" element={<Landing />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+                path="/organization"
+                element={
+                    <ProtectedRoute>
+                        <Organization />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/invites"
+                element={
+                    <ProtectedRoute>
+                        <Invites />
+                    </ProtectedRoute>
+                }
+            />
 
-            <Route path="/organization/:id" element={
-                <ProtectedRoute>
-                    <OrganizationDetail/>
-                </ProtectedRoute>
-            }/>
+            {/* ── org section (nested under layout: navbar + NotificationProvider + Outlet) ── */}
+            <Route
+                path="/organization/:id"
+                element={
+                    <ProtectedRoute>
+                        <OrgLayout />
+                    </ProtectedRoute>
+                }
+            >
+                <Route index element={<OrganizationDetail />} />
+                <Route path="members" element={<OrganizationMember />} />
+                <Route path="invites" element={<OrganizationInvites />} />
+                <Route path="teams" element={<Team />} />
+                <Route path="teams/:teamId" element={<TeamDetail />} />
+                <Route path="teams/:teamId/projects" element={<Project />} />
+                <Route path="teams/:teamId/projects/:projectId" element={<Task />} />
+            </Route>
 
-            <Route path="/organization/:id/members" element={
-                <ProtectedRoute>
-                    <OrganizationMember/>
-                </ProtectedRoute>
-            }/>
-
-            <Route path="/invites" element={
-                <ProtectedRoute>
-                    <Invites/>
-                </ProtectedRoute>
-            }/>
-
-            <Route path="/organization/:id/invites" element={
-                <ProtectedRoute>
-                    <OrganizationInvites/>
-                </ProtectedRoute>
-            }/>
-
-            <Route path="/organization/:id/teams" element={
-                <ProtectedRoute>
-                    <Team/>
-                </ProtectedRoute>
-            }/>
-            <Route path="/organization/:id/teams/:teamId" element={
-                <ProtectedRoute>
-                    <TeamDetail/>
-                </ProtectedRoute>
-            }/>
-            <Route path="/organization/:id/teams/:teamId/projects" element={
-                <ProtectedRoute>
-                    <Project/>
-                </ProtectedRoute>
-            }/>
-            <Route path="/organization/:id/teams/:teamId/projects/:projectId" element={
-                <ProtectedRoute>
-                    <Task/>
-                </ProtectedRoute>
-            }/>
-            <Route path="*" element= {<NotFound/>}/>
+            {/* ── catch-all ── */}
+            <Route path="*" element={<NotFound />} />
         </Routes>
     )
 }
 
 export default AppRoutes
-
