@@ -511,8 +511,10 @@
   }
   .mbx-index { display: none; }
   .mbx-mark { grid-area: mark; width: 44px; height: 44px; font-size: 0.85rem; }
-  .mbx-who { grid-area: who; }
-  .mbx-meta { grid-area: meta; flex-direction: row; align-items: center; }
+  .mbx-who { grid-area: who; min-width: 0; }
+  .mbx-who h2 { font-size: 1.15rem; overflow-wrap: anywhere; }
+  .mbx-who p { overflow-wrap: anywhere; }
+  .mbx-meta { grid-area: meta; flex-direction: row; align-items: center; flex-wrap: wrap; gap: 8px 14px; }
   .mbx-line { white-space: normal; }
   .mbx-foot span:nth-child(2) { display: none; }
 }

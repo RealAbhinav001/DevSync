@@ -211,8 +211,13 @@
     text-transform: uppercase;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 560px) {
     .nbell-panel {
-        width: 290px;
+        position: fixed;
+        top: 72px;
+        left: 12px;
+        right: 12px;
+        width: auto;
+        max-height: 72vh;
     }
 }
