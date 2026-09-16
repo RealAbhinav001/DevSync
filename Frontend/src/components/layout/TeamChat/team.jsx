@@ -3,6 +3,7 @@ import { socketContext } from "../../../context/socketContext";
 import { getMessages } from "../../../api/chatApi";
 import { useParams } from "react-router-dom"
 import {AuthContext} from "../../../context/authContext"
+import { Pencil, Trash2 } from "lucide-react"
 import "./team.css"
 
 const Chat = ()=>{
@@ -47,16 +48,32 @@ const Chat = ()=>{
             setMessages(prev => [...prev,newMessage])
         })
 
+        socket.on("message-deleted",(delMess)=>{
+            setMessages(prev => prev.filter((m)=>(m._id !== delMess._id)))
+        })
+
+        socket.on("message-edited",(edMess)=>{
+            setMessages(prev => prev.map((m)=>(m._id === edMess._id?edMess:m)))
+        })
+
         socket.on("socket-error", (err) => setError(err.message))
 
-        return ()=>{socket.off("receive-team-message"),
+        return ()=>{socket.off("receive-team-message")
             socket.off("socket-error")
+            socket.off("message-deleted")
+            socket.off("message-edited")
         }
     },[socket])
 
     useEffect(()=>{
         bottomRef.current?.scrollIntoView({ behavior: "smooth" })
     },[messages])
+
+    const handleDelete = (messageId)=>{
+        if(!socket) return
+
+        socket.emit("delete-team-message",messageId)
+    }
 
     return (
         <div className="chat-shell">
@@ -84,6 +101,14 @@ const Chat = ()=>{
                                 <span className="chat-msg-time">{new Date(message.createdAt).toLocaleTimeString()}</span>
                             </div>
                             <p className="chat-msg-text">{message.content}</p>
+                            <div className="chat-msg-actions">
+                                <button className="chat-act" type="button" title="Edit">
+                                    <Pencil size={13} strokeWidth={2.2} />
+                                </button>
+                                <button className="chat-act chat-act-del" onClick={()=>(handleDelete(message._id))} type="button" title="Delete">
+                                    <Trash2 size={13} strokeWidth={2.2} />
+                                </button>
+                            </div>
                         </div>
                     </article>
                 ))}

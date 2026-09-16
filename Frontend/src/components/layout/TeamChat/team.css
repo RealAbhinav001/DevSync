@@ -201,6 +201,51 @@
     word-break: break-word;
 }
 
+/* ── message actions (edit / delete) ── */
+.chat-msg-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+/* only my own messages get actions, revealed on hover */
+.chat-msg:not(.chat-msg-mine) .chat-msg-actions {
+    display: none;
+}
+
+.chat-msg-mine:hover .chat-msg-actions {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.chat-act {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    background: transparent;
+    border: 1px solid rgba(20, 20, 18, 0.2);
+    color: var(--char-dim, #55524b);
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.chat-act:hover {
+    background: var(--char, #141412);
+    border-color: var(--char, #141412);
+    color: var(--paper, #efeae2);
+}
+
+.chat-act-del:hover {
+    background: #d63a12;
+    border-color: #d63a12;
+    color: #fff;
+}
+
 /* ── my own messages → right aligned, coral bubble ── */
 .chat-msg-mine {
     flex-direction: row-reverse;
