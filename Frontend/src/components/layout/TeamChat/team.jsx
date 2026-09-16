@@ -2,6 +2,7 @@ import { useContext,useState,useEffect } from "react";
 import { socketContext } from "../../../context/socketContext";
 import { getMessages } from "../../../api/chatApi";
 import { useParams } from "react-router-dom"
+import { useRef } from "react";
 import "./team.css"
 
 const Chat = ()=>{
@@ -10,6 +11,7 @@ const Chat = ()=>{
     const params = useParams()
     const [input,setInput] = useState("");
     const [error,setError] = useState("")
+    const bottomRef = useRef(null)
 
     useEffect(()=>{
         const getMessage = async ()=>{
@@ -51,6 +53,10 @@ const Chat = ()=>{
         }
     },[socket])
 
+    useEffect(()=>{
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+    },[messages])
+
     return (
         <div className="chat-shell">
             <header className="chat-head">
@@ -80,6 +86,7 @@ const Chat = ()=>{
                         </div>
                     </article>
                 ))}
+                <div ref={bottomRef}></div>
             </div>
 
             <form className="chat-composer" onSubmit={handleSend}>
