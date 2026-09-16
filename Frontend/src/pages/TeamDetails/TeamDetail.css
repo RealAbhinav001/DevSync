@@ -435,6 +435,30 @@
 .tdx-submit:hover::before { transform: translateY(0); }
 .tdx-submit > * { position: relative; z-index: 1; }
 
+/* ── team chat section ── */
+.tdx-chatsection {
+  margin-top: clamp(2rem, 5vw, 3.4rem);
+}
+.tdx-chatlabel {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+.tdx-chatlabel-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--char-dim);
+}
+.tdx-chatlabel-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(20, 20, 18, 0.14);
+}
+
 /* ── responsive ── */
 @media (max-width: 680px) {
   .tdx-row { flex-wrap: wrap; }

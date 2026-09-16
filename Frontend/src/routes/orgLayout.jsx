@@ -2,6 +2,7 @@ import "./orgLayout.css";
 import { NotificationProvider } from "../context/notificationProvider";
 import { Outlet } from "react-router-dom"
 import DashNav from "../components/layout/Dashboard Navbar/dashNav";
+import BackButton from "../components/layout/BackButton/BackButton";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 
@@ -13,6 +14,9 @@ const OrgLayout = ()=>{
             <div className="org-navshell">
                 <div className="org-navframe">
                     <DashNav user={user?.name}/>
+                    <div className="org-backrow">
+                        <BackButton/>
+                    </div>
                 </div>
             </div>
             <Outlet/>

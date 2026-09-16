@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { getTeamMember, addMember,removeMember,changeRole } from "../../api/teamApi";
 import { motion } from "framer-motion";
 import { Asterisk, Plus, X, Trash2, ArrowUpRight } from "lucide-react";
+import Chat from "../../components/layout/TeamChat/team";
 
 const TeamDetail = () => {
   const param = useParams();
@@ -144,6 +145,15 @@ const TeamDetail = () => {
             ))}
           </div>
         )}
+
+        {/* team chat */}
+        <section className="tdx-chatsection">
+          <div className="tdx-chatlabel">
+            <span className="tdx-chatlabel-tag">❯ CHANNEL</span>
+            <span className="tdx-chatlabel-line" aria-hidden="true"></span>
+          </div>
+          <Chat />
+        </section>
 
       </div>
 

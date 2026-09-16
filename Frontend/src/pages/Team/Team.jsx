@@ -138,7 +138,6 @@ const Team = ()=>{
                 </form>
             </motion.div>
           </div>}
-
         </div>
 
     )

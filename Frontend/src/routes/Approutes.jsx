@@ -53,8 +53,10 @@ const AppRoutes = () => {
                 <Route path="invites" element={<OrganizationInvites />} />
                 <Route path="teams" element={<Team />} />
                 <Route path="teams/:teamId" element={<TeamDetail />} />
+                
                 <Route path="teams/:teamId/projects" element={<Project />} />
                 <Route path="teams/:teamId/projects/:projectId" element={<Task />} />
+
             </Route>
 
             {/* ── catch-all ── */}
