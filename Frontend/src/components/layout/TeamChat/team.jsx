@@ -1,12 +1,13 @@
-import { useContext,useState,useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { socketContext } from "../../../context/socketContext";
 import { getMessages } from "../../../api/chatApi";
 import { useParams } from "react-router-dom"
-import { useRef } from "react";
+import {AuthContext} from "../../../context/authContext"
 import "./team.css"
 
 const Chat = ()=>{
     const socket = useContext(socketContext)
+    const {user} = useContext(AuthContext)
     const [messages,setMessages] = useState([])
     const params = useParams()
     const [input,setInput] = useState("");
@@ -75,7 +76,7 @@ const Chat = ()=>{
 
             <div className="chat-stream">
                 {messages.map((message)=>(
-                    <article className="chat-msg" key={message._id}>
+                    <article className={`chat-msg ${message.sender._id === user?._id?"chat-msg-mine": ""}`} key={message._id}>
                         <div className="chat-msg-avatar" aria-hidden="true"></div>
                         <div className="chat-msg-body">
                             <div className="chat-msg-meta">

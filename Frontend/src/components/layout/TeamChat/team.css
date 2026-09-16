@@ -201,6 +201,31 @@
     word-break: break-word;
 }
 
+/* ── my own messages → right aligned, coral bubble ── */
+.chat-msg-mine {
+    flex-direction: row-reverse;
+    margin-left: auto;
+}
+
+.chat-msg-mine .chat-msg-avatar {
+    background: linear-gradient(150deg, #ff4b1e, #ff8a3d);
+}
+
+.chat-msg-mine .chat-msg-meta {
+    flex-direction: row-reverse;
+}
+
+.chat-msg-mine .chat-msg-body {
+    align-items: flex-end;
+}
+
+.chat-msg-mine .chat-msg-text {
+    background: #141412;
+    border-color: #141412;
+    color: var(--paper, #efeae2);
+    border-radius: 15px 4px 15px 15px;
+}
+
 /* ── composer ── */
 .chat-composer {
     flex-shrink: 0;
