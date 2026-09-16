@@ -32,6 +32,7 @@
 .orgx-mask {
   display: block;
   overflow: hidden;
+  container-type: inline-size;
 }
 
 .orgx-line {
@@ -39,7 +40,7 @@
   align-items: center;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(2.8rem, 8.5vw, 6.8rem);
+  font-size: clamp(1.4rem, 9cqw, 6.8rem);
   line-height: 0.98;
   letter-spacing: -0.045em;
   color: var(--char);

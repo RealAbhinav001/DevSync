@@ -85,6 +85,7 @@
 .ovx-mask {
   display: block;
   overflow: hidden;
+  container-type: inline-size;
 }
 
 .ovx-line {
@@ -92,7 +93,7 @@
   align-items: center;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(3rem, 10vw, 8rem);
+  font-size: clamp(1.4rem, 10cqw, 8rem);
   line-height: 0.98;
   letter-spacing: -0.045em;
   text-transform: uppercase;

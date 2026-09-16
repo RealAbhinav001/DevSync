@@ -68,6 +68,7 @@
 /* ── giant headline ── */
 .rgx-title {
   padding: 40px 0 18px;
+  container-type: inline-size;
 }
 
 .rgx-mask {
@@ -80,7 +81,7 @@
   align-items: center;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(3rem, 10.5vw, 8.6rem);
+  font-size: clamp(1.4rem, 10cqw, 8rem);
   line-height: 0.98;
   letter-spacing: -0.045em;
   color: var(--char);
