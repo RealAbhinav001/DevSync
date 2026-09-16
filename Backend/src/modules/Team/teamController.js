@@ -20,7 +20,8 @@ const createController = asyncHandler(async (req, res) => {
 
     const team = await teamModel.create({
         name,
-        organization: orgId
+        organization: orgId,
+        members:[{user:org.owner,role:"admin"}]
     })
 
     org.teams.push(team._id)
