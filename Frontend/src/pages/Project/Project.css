@@ -40,6 +40,7 @@
 /* ── hero ── */
 .prx-hero {
   padding: clamp(1.8rem, 5vw, 3.2rem) 0 clamp(1.4rem, 3vw, 2.2rem);
+  container-type: inline-size;
 }
 .prx-kicker {
   font-family: var(--font-serif);
@@ -54,7 +55,7 @@
   align-items: flex-start;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(3rem, 11vw, 7.5rem);
+  font-size: clamp(1.6rem, 8cqw, 7.5rem);
   line-height: 0.9;
   letter-spacing: -0.04em;
   color: var(--char);

@@ -79,7 +79,7 @@
 .dtx-state-title {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(3.4rem, 12vw, 10rem);
+  font-size: clamp(2rem, 12vw, 10rem);
   line-height: 0.95;
   letter-spacing: -0.045em;
   text-transform: uppercase;
@@ -238,6 +238,7 @@
 .dtx-mask {
   display: block;
   overflow: hidden;
+  container-type: inline-size;
 }
 
 .dtx-line {
@@ -245,7 +246,7 @@
   align-items: center;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(2.6rem, 8vw, 6.6rem);
+  font-size: clamp(1.6rem, 8cqw, 6.6rem);
   line-height: 1;
   letter-spacing: -0.045em;
   text-transform: uppercase;

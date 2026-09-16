@@ -40,6 +40,7 @@
 /* ── hero ── */
 .tmx-hero {
   padding: clamp(1.8rem, 5vw, 3.2rem) 0 clamp(1.4rem, 3vw, 2.2rem);
+  container-type: inline-size;
 }
 .tmx-kicker {
   font-family: var(--font-serif);
@@ -54,7 +55,7 @@
   align-items: flex-start;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(3.6rem, 13vw, 8.5rem);
+  font-size: clamp(1.8rem, 11cqw, 8.5rem);
   line-height: 0.9;
   letter-spacing: -0.04em;
   color: var(--char);
