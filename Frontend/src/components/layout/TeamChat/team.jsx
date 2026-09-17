@@ -13,6 +13,8 @@ const Chat = ()=>{
     const params = useParams()
     const [input,setInput] = useState("");
     const [error,setError] = useState("")
+    const [editMessage,setEditMessage] = useState("")
+    const [messageId,setMessageId] = useState("")
     const bottomRef = useRef(null)
 
     useEffect(()=>{
@@ -53,7 +55,9 @@ const Chat = ()=>{
         })
 
         socket.on("message-edited",(edMess)=>{
-            setMessages(prev => prev.map((m)=>(m._id === edMess._id?edMess:m)))
+        setMessages(prev => prev.map((m)=>
+            m._id === edMess._id ? {...m, content: edMess.content, isEdited: edMess.isEdited} : m
+            ))
         })
 
         socket.on("socket-error", (err) => setError(err.message))
@@ -73,6 +77,14 @@ const Chat = ()=>{
         if(!socket) return
 
         socket.emit("delete-team-message",messageId)
+    }
+
+    const handleEdit = (messageId,editMessage)=>{
+        if(!socket) return
+        if(editMessage.trim() === "") return   // ya error set karo
+        socket.emit("edit-team-message",messageId,editMessage)
+
+        setMessageId("")
     }
 
     return (
@@ -100,9 +112,17 @@ const Chat = ()=>{
                                 <span className="chat-msg-name">{message.sender.name}</span>
                                 <span className="chat-msg-time">{new Date(message.createdAt).toLocaleTimeString()}</span>
                             </div>
-                            <p className="chat-msg-text">{message.content}</p>
+                            {messageId === message._id? (
+                                <div className="chat-edit">
+                                    <input className="chat-edit-input" type="text" placeholder={message.content} value={editMessage} onChange={(e)=>setEditMessage(e.target.value)}/>
+                                    <div className="chat-edit-actions">
+                                        <button className="chat-edit-save" onClick={()=>handleEdit(message._id,editMessage)}>Save</button>
+                                        <button className="chat-edit-cancel" onClick={()=>(setMessageId(""))}>Cancel</button>
+                                    </div>
+                                </div>
+                            ):<p className="chat-msg-text">{message.content}</p>}
                             <div className="chat-msg-actions">
-                                <button className="chat-act" type="button" title="Edit">
+                                <button className="chat-act" type="button" title="Edit" onClick={()=>{setMessageId(message._id);setEditMessage(message.content)}}>
                                     <Pencil size={13} strokeWidth={2.2} />
                                 </button>
                                 <button className="chat-act chat-act-del" onClick={()=>(handleDelete(message._id))} type="button" title="Delete">
