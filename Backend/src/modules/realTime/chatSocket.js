@@ -124,7 +124,7 @@ const setupChatSocket = (io, socket) => {
             message.content = content.trim()
             message.isEdited = true
             await message.save()
-
+            message.populate("sender","name email")
             const room = `team:${message.team}`
             io.to(room).emit("message-edited", message)
         } catch (error) {
