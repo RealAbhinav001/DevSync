@@ -34,12 +34,14 @@ const Chat = ()=>{
     const handleSend = (e)=>{
         e.preventDefault()
         if(!socket)return
+        clearTimeout(typing.current)
         if(input.trim() == ""){
             setError("Write Your Message first")
             return
         }
 
         socket.emit("send-team-message",params.teamId,input)
+        socket.emit("stop-typing-team-message",teamId)
 
         setInput("")
     }
