@@ -16,6 +16,8 @@ const Chat = ()=>{
     const [editMessage,setEditMessage] = useState("")
     const [messageId,setMessageId] = useState("")
     const bottomRef = useRef(null)
+    const typing = useRef(null)
+    const [typer,setTyper] = useState("")
 
     useEffect(()=>{
         const getMessage = async ()=>{
@@ -60,12 +62,21 @@ const Chat = ()=>{
             ))
         })
 
+        socket.on("user-typing-team-message",(data)=>{
+            setTyper(data.name)
+        })
+
+        socket.on("user-stop-typing-team-message",()=>{
+            setTyper("")
+        })
         socket.on("socket-error", (err) => setError(err.message))
 
         return ()=>{socket.off("receive-team-message")
             socket.off("socket-error")
             socket.off("message-deleted")
             socket.off("message-edited")
+            socket.off("user-typing-team-message")
+            socket.off("user-stop-typing-team-message")
         }
     },[socket])
 
@@ -85,6 +96,18 @@ const Chat = ()=>{
         socket.emit("edit-team-message",messageId,editMessage)
 
         setMessageId("")
+    }
+
+    const handleChange = (e,teamId)=>{
+        if(!socket) return
+        clearTimeout(typing.current)
+        setInput(e.target.value)
+
+        socket.emit("typing-team-message",teamId)
+
+        typing.current = setTimeout(()=>{
+            socket.emit("stop-typing-team-message",teamId)
+        },2000)
     }
 
     return (
@@ -134,11 +157,16 @@ const Chat = ()=>{
                 ))}
                 <div ref={bottomRef}></div>
             </div>
-
+            {typer && <div className="chat-typing">
+                <span className="chat-typing-dots" aria-hidden="true">
+                    <span></span><span></span><span></span>
+                </span>
+                <span className="chat-typing-text">{`${typer} is typing`}</span>
+            </div>}
             <form className="chat-composer" onSubmit={handleSend}>
                 <p className="chat-error">{error}</p>
                 <div className="chat-composer-row">
-                    <input className="chat-input" type="text" placeholder="Enter Your Message" value={input} onChange={(e)=>(setInput(e.target.value))}/>
+                    <input className="chat-input" type="text" placeholder="Enter Your Message" value={input} onChange={(e)=>{handleChange(e,params.teamId)}}/>
                     <button className="chat-send" type="submit">
                         <span>Send</span>
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
