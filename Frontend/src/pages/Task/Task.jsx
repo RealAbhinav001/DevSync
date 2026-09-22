@@ -4,6 +4,7 @@ import {useParams} from "react-router-dom"
 import { getTask,createTask,updateStatus,deleteTask,assignUser } from "../../api/taskApi"
 import { motion } from "framer-motion"
 import { Asterisk, Plus, X, Trash2, CalendarClock, UserPlus, ArrowUpRight } from "lucide-react"
+import Kanban from "../../components/layout/Kanban Board/kanbanBoard"
 
 const taskDateFormatter = new Intl.DateTimeFormat("en-IN", { day:"2-digit", month:"short", year:"numeric" })
 
@@ -156,48 +157,7 @@ const Task = ()=>{
                 <p>Break the work down — add the first task.</p>
             </div>}
 
-            {!error && !loading && tasks.length>0 && <div className="tkx-list">
-                {tasks.map((task)=>(
-                    <div className="tkx-card" key={task._id}>
-                        <span className={`tkx-rail is-${task.status}`} aria-hidden="true"/>
-
-                        <div className="tkx-card-head">
-                          <div className="tkx-card-body">
-                            <h3 className="tkx-name">{task.title}</h3>
-                            <p className="tkx-desc">{task.description}</p>
-                          </div>
-                          <button className="tkx-del" onClick={()=>removeTask(task._id)} aria-label="Delete task"><Trash2 size={15}/></button>
-                        </div>
-
-                        <div className="tkx-meta">
-                          <select className={`tkx-status is-${task.status}`} onChange={(e)=>handleStatusChange(task._id,e.target.value)} value={task.status}>
-                              <option value="to-do">To Do</option>
-                              <option value="in-progress">In Progress</option>
-                              <option value="review">Review</option>
-                              <option value="done">Done</option>
-                          </select>
-                          <span className={`tkx-prio is-${task.priority}`}>{task.priority}</span>
-                          <span className="tkx-date"><CalendarClock size={13}/> {task.deadline ? taskDateFormatter.format(new Date(task.deadline)) : "—"}</span>
-                        </div>
-
-                        <div className="tkx-assignee">
-                          <span className="tkx-avatar">{task.assignee?.name ? task.assignee.name.slice(0,2).toUpperCase() : "—"}</span>
-                          <span className="tkx-who">
-                            <b>{task.assignee?.name}</b>
-                            <small>{task.assignee?.email}</small>
-                          </span>
-                        </div>
-
-                        <details className="tkx-reassign">
-                          <summary><UserPlus size={13}/> Reassign</summary>
-                          <div className="tkx-reassign-row">
-                              <input type="email" placeholder="Assignee's Email" onChange={e => setAssignInputs(prev => ({...prev,[task._id]:e.target.value}))} value={assignInputs[task._id] || ""}/>
-                              <button onClick={()=>{handleAssign(task._id,assignInputs[task._id])}}>Assign</button>
-                          </div>
-                        </details>
-                    </div>
-                ))}
-            </div>}
+            <Kanban/>
 
           </div>
 
