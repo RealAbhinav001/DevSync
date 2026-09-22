@@ -1,9 +1,9 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import { socketContext } from "../../../context/socketContext";
-import { getMessages } from "../../../api/chatApi";
+import { getMessages,uploadFiles } from "../../../api/chatApi";
 import { useParams } from "react-router-dom"
 import {AuthContext} from "../../../context/authContext"
-import { Pencil, Trash2 } from "lucide-react"
+import { Pencil, Trash2, FileText, Download, Paperclip } from "lucide-react"
 import "./team.css"
 
 const Chat = ()=>{
@@ -41,7 +41,7 @@ const Chat = ()=>{
         }
 
         socket.emit("send-team-message",params.teamId,input)
-        socket.emit("stop-typing-team-message",teamId)
+        socket.emit("stop-typing-team-message",params.teamId)
 
         setInput("")
     }
@@ -112,6 +112,20 @@ const Chat = ()=>{
         },2000)
     }
 
+    const handleUpload = async (e)=>{
+        setError("")
+        try{
+            const file = e.target.files[0]
+            if(!file)return
+            const formData = new FormData()
+            formData.append("chatFiles",file)
+            await uploadFiles(params.teamId,formData)
+        }
+        catch(error){
+            setError(error.response?.data?.message)
+        }
+    }
+
     return (
         <div className="chat-shell">
             <header className="chat-head">
@@ -145,7 +159,15 @@ const Chat = ()=>{
                                         <button className="chat-edit-cancel" onClick={()=>(setMessageId(""))}>Cancel</button>
                                     </div>
                                 </div>
-                            ):<p className="chat-msg-text">{message.content}</p>}
+                            ):(<> {message.content && <p className="chat-msg-text">{message.content}</p>} {message.attachments?.length>0 && <div className="chat-files">
+                                {message.attachments.map((attach)=>(
+                                    <a className="chat-file" href={import.meta.env.VITE_SOCKET_URL + attach.filePath} key={attach._id} target="_blank" rel="noreferrer">
+                                        <span className="chat-file-icon" aria-hidden="true"><FileText size={18} strokeWidth={2} /></span>
+                                        <span className="chat-file-name">{attach.originalName}</span>
+                                        <span className="chat-file-dl" aria-hidden="true"><Download size={15} strokeWidth={2} /></span>
+                                    </a>
+                                ))}
+                            </div>}</>)}
                             <div className="chat-msg-actions">
                                 <button className="chat-act" type="button" title="Edit" onClick={()=>{setMessageId(message._id);setEditMessage(message.content)}}>
                                     <Pencil size={13} strokeWidth={2.2} />
@@ -168,6 +190,10 @@ const Chat = ()=>{
             <form className="chat-composer" onSubmit={handleSend}>
                 <p className="chat-error">{error}</p>
                 <div className="chat-composer-row">
+                    <label className="chat-attach" title="Attach file">
+                        <Paperclip size={17} strokeWidth={2.2} />
+                        <input type="file" onChange={(e)=>handleUpload(e)} hidden/>
+                    </label>
                     <input className="chat-input" type="text" placeholder="Enter Your Message" value={input} onChange={(e)=>{handleChange(e,params.teamId)}}/>
                     <button className="chat-send" type="submit">
                         <span>Send</span>

@@ -201,6 +201,79 @@
     word-break: break-word;
 }
 
+/* ── file attachments ── */
+.chat-files {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+.chat-file {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    max-width: 320px;
+    padding: 10px 13px;
+    background: rgba(255, 250, 240, 0.7);
+    border: 1px solid rgba(20, 20, 18, 0.14);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--char, #141412);
+    transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+.chat-file:hover {
+    border-color: #ff4b1e;
+    transform: translateY(-1px);
+    background: rgba(255, 250, 240, 0.95);
+}
+
+.chat-file-icon {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: #141412;
+    color: var(--paper, #efeae2);
+}
+
+.chat-file-name {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--font-body, "Inter", sans-serif);
+    font-size: 0.82rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-file-dl {
+    flex-shrink: 0;
+    color: var(--char-dim, #55524b);
+    transition: color 0.2s ease;
+}
+.chat-file:hover .chat-file-dl {
+    color: #ff4b1e;
+}
+
+/* my own file messages → dark card */
+.chat-msg-mine .chat-file {
+    background: #141412;
+    border-color: #141412;
+    color: var(--paper, #efeae2);
+}
+.chat-msg-mine .chat-file-icon {
+    background: #ff4b1e;
+    color: #fff;
+}
+.chat-msg-mine .chat-file-dl {
+    color: rgba(239, 234, 226, 0.6);
+}
+
 /* ── inline edit mode ── */
 .chat-edit {
     display: flex;
@@ -419,8 +492,26 @@
     background: var(--paper, #efeae2);
     border: 1.5px solid rgba(20, 20, 18, 0.2);
     border-radius: 99px;
-    padding: 5px 5px 5px 18px;
+    padding: 5px 5px 5px 8px;
     transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* paperclip attach button (hides native file input) */
+.chat-attach {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    color: var(--char-dim, #55524b);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.chat-attach:hover {
+    background: rgba(20, 20, 18, 0.07);
+    color: var(--char, #141412);
 }
 
 .chat-composer-row:focus-within {

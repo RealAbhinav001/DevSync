@@ -5,3 +5,9 @@ export const getMessages = async (teamId)=>{
 
     return response.data
 }
+
+export const uploadFiles = async (teamId,formData)=>{
+    const response = await instance.post(`/chat/${teamId}/upload`,formData)
+
+    return response.data
+}
