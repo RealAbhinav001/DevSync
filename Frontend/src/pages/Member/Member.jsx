@@ -56,18 +56,6 @@ const OrganizationMember = () => {
         <div className="mbx-page">
             <div className="mbx-frame">
 
-                {/* back rail */}
-                <motion.div
-                    className="mbx-backrail"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.7 }}
-                >
-                    <Link to={`/organization/${params.id}`}>
-                        <ArrowLeft size={15} /> COMMAND DECK
-                    </Link>
-                    <span>SECTION — MEMBERS</span>
-                </motion.div>
 
                 {/* giant headline */}
                 <header className="mbx-head">
@@ -79,7 +67,6 @@ const OrganizationMember = () => {
                     >
                         the people behind the pulse
                     </motion.p>
-                    {isOwner && <button className="mbx-invite">+ Invite</button>}
                     <h1 className="mbx-title" aria-label="The crew.">
                         <span className="mbx-mask">
                             <motion.span

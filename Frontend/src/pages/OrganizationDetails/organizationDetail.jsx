@@ -281,9 +281,9 @@ const OrganizationDetail = () => {
                   <Settings size={17} />
                 </button>
               )}
-              <button type="button" className="dtx-create">
-                <Plus size={16} strokeWidth={2.4} /> CREATE NEW
-              </button>
+              <Link to={`/organization/${params.id}/teams`} className="dtx-create">
+                <Plus size={16} strokeWidth={2.4} /> NEW TEAM
+              </Link>
             </div>
           </motion.div>
 
@@ -310,20 +310,9 @@ const OrganizationDetail = () => {
             <sup>01</sup> OVERVIEW
           </button>
           <Link to={`/organization/${params.id}/teams`}><sup>02</sup> TEAMS <b>{teamCount}</b></Link>
-          <button type="button">
-            <sup>03</sup> PROJECTS
-          </button>
-          <button type="button">
-            <sup>04</sup> TASKS
-          </button>
-          <button type="button">
-            <sup>05</sup> ACTIVITY
-          </button>
-          <button type="button">
-            <sup>06</sup> CHAT
-          </button>
+          <Link to={`/organization/${params.id}/members`}><sup>03</sup> MEMBERS <b>{memberCount}</b></Link>
           {isOwner && <Link to={`/organization/${params.id}/invites`} className="dtx-tab-invites">
-            <sup>07</sup> SENT INVITES <ArrowUpRight size={13} strokeWidth={2.4} />
+            <sup>04</sup> SENT INVITES <ArrowUpRight size={13} strokeWidth={2.4} />
           </Link>}
         </motion.nav>
 
@@ -532,22 +521,22 @@ const OrganizationDetail = () => {
                 <i><ArrowUpRight size={24} strokeWidth={2.2} /></i>
               </button>
             )}
-            <button type="button" className="dtx-action-row">
+            <Link to={`/organization/${params.id}/teams`} className="dtx-action-row">
               <span className="dtx-action-num">B</span>
               <div>
-                <strong>CREATE PROJECT</strong>
-                <small>start a delivery track</small>
+                <strong>BROWSE TEAMS</strong>
+                <small>projects & tasks live inside teams</small>
               </div>
               <i><ArrowUpRight size={24} strokeWidth={2.2} /></i>
-            </button>
-            <button type="button" className="dtx-action-row">
+            </Link>
+            <Link to={`/organization/${params.id}/members`} className="dtx-action-row">
               <span className="dtx-action-num">C</span>
               <div>
-                <strong>ADD TASK</strong>
-                <small>capture the next move</small>
+                <strong>VIEW MEMBERS</strong>
+                <small>see everyone in the crew</small>
               </div>
               <i><ArrowUpRight size={24} strokeWidth={2.2} /></i>
-            </button>
+            </Link>
           </div>
         </motion.section>
 

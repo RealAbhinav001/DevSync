@@ -62,9 +62,6 @@ const OrganizationInvites = () => {
                 <div className="ovx-rail">
                     <Link to={`/organization/${param.id}`} className="ovx-brand">DEVSYNC<sup>®</sup></Link>
                     <span className="ovx-rail-mid">OUTBOX — INVITES YOU SENT</span>
-                    <Link to={`/organization/${param.id}`} className="ovx-rail-link">
-                        <ArrowLeft size={13} /> COMMAND DECK
-                    </Link>
                 </div>
 
                 {/* headline */}
