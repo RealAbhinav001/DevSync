@@ -37,6 +37,7 @@ const createController = asyncHandler(async (req, res) => {
 
     project.tasks.push(task._id)
     await project.save()
+    await task.populate("assignee")
 
     await activityLogger({
         actor: req.user._id,
