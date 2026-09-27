@@ -8,7 +8,7 @@ const projectSchema = new mongoose.Schema(
         },
         description: {
             type: String,
-            required: true
+            
         },
         team: {
             type: mongoose.Schema.Types.ObjectId,
@@ -21,7 +21,7 @@ const projectSchema = new mongoose.Schema(
         },
         deadline: {
             type: Date,
-            required: true
+            
         },
         tasks: [
             {

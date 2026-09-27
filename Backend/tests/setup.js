@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const { MongoMemoryServer } = require("mongodb-memory-server")
+const { setIo } = require("../src/modules/realTime/socketManager.js")
 
 let mongo
 
@@ -8,6 +9,11 @@ let mongo
 beforeAll(async () => {
     mongo = await MongoMemoryServer.create()
     await mongoose.connect(mongo.getUri())
+
+    // Stub socket.io: controllers (task/project) emit real-time events via getIo().
+    // The real io is only wired up on the HTTP server, which tests don't start —
+    // so without this stub, getIo() throws and those endpoints would 500 in tests.
+    setIo({ to: () => ({ emit: () => {} }) })
 })
 
 // ── after EACH test: wipe every collection ──

@@ -8,7 +8,7 @@ const taskSchema = new mongoose.Schema(
         },
         description: {
             type: String,
-            required: true
+            
         },
         project: {
             type: mongoose.Schema.Types.ObjectId,
@@ -30,7 +30,7 @@ const taskSchema = new mongoose.Schema(
         },
         deadline: {
             type: Date,
-            required: true
+            
         }
     },
     {
