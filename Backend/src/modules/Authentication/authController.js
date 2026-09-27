@@ -69,7 +69,7 @@ const loginController = asyncHandler(async (req, res) => {
     const pass = await bcrypt.compare(password, user.password)
 
     if (!pass) {
-        throw new ApiError(400, "Check your credentials")
+        throw new ApiError(401, "Check your credentials")
     }
 
     const accessToken = jwt.sign(
