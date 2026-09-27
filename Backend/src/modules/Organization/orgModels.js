@@ -9,7 +9,6 @@ const orgSchema = new moongoose.Schema(
 
         description: {
             type: String,
-            required: true
         },
 
         owner: {

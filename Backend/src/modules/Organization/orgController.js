@@ -22,7 +22,7 @@ const createController = asyncHandler(async (req, res) => {
         members: [user]
     })
 
-    res.status(200).json({
+    res.status(201).json({
         message: "Organization Successfull Created",
         organization
     })
