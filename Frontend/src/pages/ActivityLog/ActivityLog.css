@@ -1,0 +1,187 @@
+/* ══════════════════════════════════════════════
+   Activity Log — full page (editorial "pulse")
+   Reuses the dashboard timeline aesthetic.
+   ══════════════════════════════════════════════ */
+
+.alx-page {
+  min-height: 100vh;
+  background: var(--paper);
+  background-image:
+    radial-gradient(ellipse 70% 45% at 50% -8%, rgba(255, 75, 30, 0.05), transparent 60%),
+    linear-gradient(var(--paper), var(--paper));
+  color: var(--char);
+}
+
+.alx-frame {
+  width: min(1280px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 42px 0 96px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* header */
+.alx-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  margin-bottom: 26px;
+  border-bottom: 1px solid var(--char);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--char);
+}
+
+/* filter tabs */
+.alx-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 34px;
+}
+
+.alx-tab {
+  padding: 8px 18px;
+  background: transparent;
+  border: 1px solid rgba(20, 20, 18, 0.28);
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--char-dim);
+  transition: all 0.25s ease;
+}
+
+.alx-tab:hover {
+  border-color: var(--char);
+  color: var(--char);
+}
+
+.alx-tab-active {
+  background: var(--char);
+  border-color: var(--char);
+  color: var(--paper);
+}
+
+/* states: loading / error / empty */
+.alx-state {
+  padding: 46px 6px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--char-dim);
+  border-top: 1px solid rgba(20, 20, 18, 0.2);
+}
+
+.alx-state em {
+  color: var(--char);
+  font-style: italic;
+}
+
+.alx-state-error {
+  color: #ff4b1e;
+}
+
+/* timeline (mirrors dashboard .dtx-timeline) */
+.alx-timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.alx-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "actor time"
+    "msg time"
+    "ctx time";
+  row-gap: 4px;
+  padding: 20px 6px 20px 34px;
+  border-bottom: 1px solid rgba(20, 20, 18, 0.2);
+  transition: background 0.3s ease;
+}
+
+.alx-item:first-child {
+  border-top: 1px solid rgba(20, 20, 18, 0.2);
+}
+
+.alx-item:hover {
+  background: rgba(20, 20, 18, 0.04);
+}
+
+/* timeline spine + node */
+.alx-item::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  width: 1.5px;
+  background: rgba(20, 20, 18, 0.25);
+}
+
+.alx-item::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 26px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 3px solid #ff4b1e;
+}
+
+.alx-item strong {
+  grid-area: actor;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--char);
+}
+
+.alx-item p {
+  grid-area: msg;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--char-dim);
+}
+
+.alx-item span {
+  grid-area: ctx;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: #ff4b1e;
+}
+
+.alx-item time {
+  grid-area: time;
+  align-self: start;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  color: var(--char-dim);
+  white-space: nowrap;
+}
+
+/* mobile */
+@media (max-width: 620px) {
+  .alx-frame {
+    width: calc(100% - 32px);
+    padding: 28px 0 72px;
+  }
+
+  .alx-item {
+    grid-template-areas:
+      "actor actor"
+      "msg msg"
+      "ctx time";
+  }
+}

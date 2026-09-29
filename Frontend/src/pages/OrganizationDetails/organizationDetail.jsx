@@ -457,6 +457,10 @@ const OrganizationDetail = () => {
               ))}
             </div>
           )}
+
+          <Link to={`/organization/${params.id}/activity`} className="dtx-viewall">
+            VIEW FULL LOG ❯
+          </Link>
         </motion.section>
 
         {/* ── (03) teams ── */}

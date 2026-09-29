@@ -13,6 +13,7 @@ import TeamDetail from "../pages/TeamDetails/TeamDetail"
 import Project from "../pages/Project/Project"
 import Task from "../pages/Task/Task"
 import NotFound from "../pages/NotFound/NotFound"
+import ActivityLog from "../pages/ActivityLog/ActivityLog"
 import OrgLayout from "./orgLayout"
 
 const AppRoutes = () => {
@@ -49,6 +50,7 @@ const AppRoutes = () => {
                 }
             >
                 <Route index element={<OrganizationDetail />} />
+                <Route path="activity" element={<ActivityLog />} />
                 <Route path="members" element={<OrganizationMember />} />
                 <Route path="invites" element={<OrganizationInvites />} />
                 <Route path="teams" element={<Team />} />

@@ -805,6 +805,22 @@
   white-space: nowrap;
 }
 
+.dtx-viewall {
+  align-self: flex-end;
+  margin-top: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: #ff4b1e;
+  text-decoration: none;
+  transition: letter-spacing 0.25s ease;
+}
+
+.dtx-viewall:hover {
+  letter-spacing: 0.26em;
+}
+
 /* (03) teams */
 .dtx-teams {
   display: flex;
