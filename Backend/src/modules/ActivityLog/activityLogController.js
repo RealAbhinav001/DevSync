@@ -17,7 +17,7 @@ const ChangeController = asyncHandler(async (req, res) => {
     if (activities.length === 0) {
         return res.status(200).json({
             message: "Activities not found",
-            activities: []
+            activity: []
         })
     }
 
@@ -46,7 +46,7 @@ const taskChangeController = asyncHandler(async (req, res) => {
     if (activities.length == 0) {
         return res.status(200).json({
             message: "Activities not found",
-            activities: []
+            activity: []
         })
     }
 
@@ -75,7 +75,7 @@ const teamChangeController = asyncHandler(async (req, res) => {
     if (activities.length == 0) {
         return res.status(200).json({
             message: "Activities not found",
-            activities: []
+            activity: []
         })
     }
 
@@ -104,7 +104,7 @@ const projectChangeController = asyncHandler(async (req, res) => {
     if (activities.length == 0) {
         return res.status(200).json({
             message: "Activities not found",
-            activities: []
+            activity: []
         })
     }
 
