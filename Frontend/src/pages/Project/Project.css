@@ -497,4 +497,89 @@
   .prx-idx { display: none; }
   .prx-date { display: none; }
   .prx-field-row { flex-direction: column; gap: 0; }
+  .prx-controls { flex-direction: column; align-items: stretch; }
 }
+
+/* ── search + status filter ── */
+.prx-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 28px 0 34px;
+}
+
+.prx-search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: rgba(20, 20, 18, 0.02);
+  border: 1px solid rgba(20, 20, 18, 0.16);
+  border-radius: 2px;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.prx-search:focus-within {
+  border-color: #ff4b1e;
+  background: rgba(255, 75, 30, 0.03);
+}
+
+.prx-search-ico {
+  color: var(--char-dim);
+  flex-shrink: 0;
+  transition: color 0.25s ease;
+}
+
+.prx-search:focus-within .prx-search-ico { color: #ff4b1e; }
+
+.prx-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: var(--char);
+}
+
+.prx-search-input::placeholder {
+  color: var(--char-dim);
+  letter-spacing: 0.08em;
+}
+
+.prx-search-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--char-dim);
+  border-radius: 50%;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.prx-search-clear:hover {
+  color: #ff4b1e;
+  background: rgba(255, 75, 30, 0.08);
+}
+
+.prx-filter {
+  padding: 14px 18px;
+  background: var(--paper);
+  border: 1px solid rgba(20, 20, 18, 0.16);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  color: var(--char);
+  cursor: pointer;
+  transition: border-color 0.25s ease, opacity 0.25s ease;
+}
+
+.prx-filter:hover { border-color: #ff4b1e; }
+.prx-filter:focus { outline: none; border-color: #ff4b1e; }
+.prx-filter:disabled { opacity: 0.4; cursor: not-allowed; }

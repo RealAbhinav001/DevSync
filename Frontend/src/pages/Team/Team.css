@@ -355,10 +355,73 @@
 .tmx-submit:hover::before { transform: translateY(0); }
 .tmx-submit > * { position: relative; z-index: 1; }
 
+/* ── search ── */
+.tmx-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 28px 0 34px;
+  padding: 14px 18px;
+  background: rgba(20, 20, 18, 0.02);
+  border: 1px solid rgba(20, 20, 18, 0.16);
+  border-radius: 2px;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.tmx-search:focus-within {
+  border-color: #ff4b1e;
+  background: rgba(255, 75, 30, 0.03);
+}
+
+.tmx-search-ico {
+  color: var(--char-dim);
+  flex-shrink: 0;
+  transition: color 0.25s ease;
+}
+
+.tmx-search:focus-within .tmx-search-ico {
+  color: #ff4b1e;
+}
+
+.tmx-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: var(--char);
+}
+
+.tmx-search-input::placeholder {
+  color: var(--char-dim);
+  letter-spacing: 0.08em;
+}
+
+.tmx-search-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--char-dim);
+  border-radius: 50%;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.tmx-search-clear:hover {
+  color: #ff4b1e;
+  background: rgba(255, 75, 30, 0.08);
+}
+
 /* ── responsive ── */
 @media (max-width: 620px) {
   .tmx-metas { gap: 0.6rem; }
   .tmx-date { display: none; }
   .tmx-idx { display: none; }
   .tmx-badge { width: 40px; height: 40px; }
+  .tmx-search { margin: 20px 0 26px; padding: 12px 14px; }
 }

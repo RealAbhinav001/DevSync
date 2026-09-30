@@ -1,7 +1,8 @@
 import "./Project.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getProject, createProject, updateProject,deleteProject} from "../../api/projectApi";
+import { searchProject, projectFilter } from "../../api/searchApi";
 import { motion } from "framer-motion";
 import {
   Asterisk,
@@ -11,6 +12,7 @@ import {
   ListTodo,
   CalendarClock,
   Trash2,
+  Search,
 } from "lucide-react";
 
 const projectDateFormatter = new Intl.DateTimeFormat("en-IN", {
@@ -30,7 +32,42 @@ const Project = () => {
     deadline: "",
     status: "active",
   });
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [result, setResult] = useState([]);
+  const timerRef = useRef(null);
   const params = useParams();
+
+  // when a search or status-filter is active, show `result`; else the full list
+  const isFiltering = query.trim() !== "" || statusFilter !== "all";
+  const displayed = isFiltering ? result : projects;
+
+  useEffect(() => {
+    const run = async () => {
+      // nothing active → clear results, full list shows
+      if (!query.trim() && statusFilter === "all") {
+        setResult([]);
+        return;
+      }
+
+      clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(async () => {
+        try {
+          setError("");
+          // search (title) takes priority; otherwise filter by status
+          const data = query.trim()
+            ? await searchProject(params.teamId, query)
+            : await projectFilter(params.teamId, statusFilter);
+          setResult(data.projects);
+        } catch (error) {
+          setError(error.response?.data?.message);
+        }
+      }, 400);
+    };
+
+    run();
+    return () => clearTimeout(timerRef.current);
+  }, [query, statusFilter]);
 
   useEffect(() => {
     const allProjects = async () => {
@@ -151,6 +188,43 @@ const Project = () => {
           </div>
         </header>
 
+        {/* search + status filter */}
+        <div className="prx-controls">
+          <div className="prx-search">
+            <Search size={16} className="prx-search-ico" aria-hidden="true" />
+            <input
+              type="text"
+              className="prx-search-input"
+              placeholder="Search projects by title…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            {query && (
+              <button
+                type="button"
+                className="prx-search-clear"
+                onClick={() => setQuery("")}
+                aria-label="Clear search"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+
+          <select
+            className="prx-filter"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            disabled={query.trim() !== ""}
+          >
+            <option value="all">All statuses</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+            <option value="on-hold">On Hold</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+
         {error && (
           <div className="prx-state prx-state-error">
             <span className="prx-state-tag">⚠ SIGNAL ERROR</span>
@@ -168,17 +242,26 @@ const Project = () => {
           </div>
         )}
 
-        {!error && !loading && projects.length === 0 && (
+        {!error && !loading && displayed.length === 0 && (
           <div className="prx-state prx-state-empty">
             <span className="prx-state-tag">[ VOID ]</span>
-            <h2>No projects yet.</h2>
-            <p>Kick off the first project for this squad.</p>
+            {isFiltering ? (
+              <>
+                <h2>No projects match.</h2>
+                <p>Try a different search or status.</p>
+              </>
+            ) : (
+              <>
+                <h2>No projects yet.</h2>
+                <p>Kick off the first project for this squad.</p>
+              </>
+            )}
           </div>
         )}
 
-        {!error && !loading && projects.length > 0 && (
+        {!error && !loading && displayed.length > 0 && (
           <div className="prx-list">
-            {projects.map((project, i) => (
+            {displayed.map((project, i) => (
               <div className="prx-row" key={project._id}>
                 <span className="prx-idx">
                   {String(i + 1).padStart(2, "0")}
