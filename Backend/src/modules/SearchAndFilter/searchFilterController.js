@@ -60,7 +60,7 @@ const searchprojectController = asyncHandler(async (req, res) => {
 })
 
 const searchtaskController = asyncHandler(async (req, res) => {
-    const projectId = req.params.id
+    const projectId = req.params.projectId
     if (!projectId) {
         throw new ApiError(400, "Project Id is not found")
     }
