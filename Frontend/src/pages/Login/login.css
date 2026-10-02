@@ -392,3 +392,15 @@
     display: none;
   }
 }
+
+@media (max-width: 480px) {
+  .lgx-foot {
+    gap: 10px;
+    letter-spacing: 0.1em;
+    font-size: 0.56rem;
+  }
+  /* decorative middle label — drop it on tiny screens to avoid overflow */
+  .lgx-foot span:nth-child(2) {
+    display: none;
+  }
+}
